@@ -1,0 +1,12 @@
+prefix="FileList"
+file="gm2_particle_gas.root"
+
+for i in {0..15}
+do
+    if test -f "$prefix$i/$file"; then
+	hadd "gm2_pa.root" $file
+    fi
+done
+
+
+

@@ -1,0 +1,205 @@
+// Reconstruct tracks while scanning over lockLowDCA_ values
+// Based on RunTrackingDAQ.fcl and RvstCalibration.fcl
+// Sam Grant - Oct 2019
+
+#include "messageParams.fcl"
+#include "trackingConfig.fcl"
+
+process_name : offline
+
+// Input some unpacked data
+source : {
+  module_type : RootInput
+  maxEvents   : -1
+} 
+
+outputs : {
+  out : { 
+   module_type  : RootOutput
+   fileName     : "gm2tracker_extreme_reco_25-11-19.root"
+   dataTier     : "full"
+
+   outputCommands : [ "keep *",
+                        // Stop the unpacked data products appearing in ouput
+    "drop *::*_*_*_unpacking",
+    @sequence::trackingChain.outputDrops
+    ] 
+   SelectEvents : ["path"]
+  } // out
+} // end of outputs block
+
+// Services block
+services : {
+  FileCatalogMetadata : {
+    applicationFamily  : "tracker"
+    applicationVersion : "v9_31_00"
+    fileType           : "offline"
+  }
+  message : {
+    debugModules : [] // ["*"]
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO" // "DEBUG" //INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "gm2tracker_extreme_reco-25-11-29.log"
+        append    :  false
+        threshold : "INFO" // "DEBUG"
+        categories : @local::message_categories
+      }
+    }
+  }  // end of message services
+
+  // the coordinate system data is used throughout the tracking code
+  // for now, the tracking uses GEANT for the coordinates
+  // to build the coordinates requires dependent on artg4
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  @table::trackingChain.geometry
+  @table::trackingChain.field
+
+  TrackQuality : {} // default is off
+  // Book ROOT file for plots
+  // TFileService : { fileName : "TrackingLockLowDCA.root" }
+
+} // end of services block
+
+physics : {
+  filters: {
+    // Not sure whether I need all this
+    TrackFilter : 
+    {
+      module_type : TrackerFillTypeFilter
+      fillType    : 1
+      throwOnEmptyHeaderCollection : false
+      // Need some radius filter <500 um
+      
+    }
+  }
+  producers : {
+    // Tracking chain
+   @table::trackingChain.producers
+    // Fit the tracks
+     tracks0 : @local::geanefit_params 
+     tracks1 : @local::geanefit_params 
+     tracks2 : @local::geanefit_params 
+     tracks3 : @local::geanefit_params 
+     tracks4 : @local::geanefit_params 
+     tracks5 : @local::geanefit_params 
+     tracks6 : @local::geanefit_params 
+     tracks7 : @local::geanefit_params 
+     tracks8 : @local::geanefit_params 
+     tracks9 : @local::geanefit_params 
+     tracks10 : @local::geanefit_params 
+     tracks11 : @local::geanefit_params 
+     tracks12 : @local::geanefit_params 
+     tracks13 : @local::geanefit_params 
+     tracks14 : @local::geanefit_params 
+     tracks15 : @local::geanefit_params 
+     tracks16 : @local::geanefit_params
+     tracks17 : @local::geanefit_params 
+     tracks18 : @local::geanefit_params  
+     tracks19 : @local::geanefit_params 
+     tracks20 : @local::geanefit_params 
+     tracks21 : @local::geanefit_params 
+     tracks22 : @local::geanefit_params 
+     tracks23 : @local::geanefit_params 
+     tracks24 : @local::geanefit_params 
+     tracks25 : @local::geanefit_params 
+     tracks26 : @local::geanefit_params 
+     tracks27 : @local::geanefit_params 
+   } 
+
+  // My path, reconstructing tracks with different lockLowDCA values
+   path : [ TrackFilter,
+     artg4,
+     removeFlash,
+     killStraws,
+     digitTimeSync,
+     deadTime,
+     timeIslands,
+     clustering,
+     seeds,
+     trackCandidates,
+     t0Finder,
+     driftDistReco,
+     tracks0,
+     tracks1,
+     tracks2,
+     tracks3, 
+     tracks4,
+     tracks5,
+     tracks6,
+     tracks7,
+     tracks8,
+     tracks9,
+     tracks10,
+     tracks11,
+     tracks12,
+     tracks13,
+     tracks14,
+     tracks15,
+     tracks16,
+     tracks17,
+     tracks18,
+     tracks19,
+     tracks20,
+     tracks21,
+     tracks22,
+     tracks23,
+     tracks24,
+     tracks25,
+     tracks26,
+     tracks27 
+     ] 
+
+   outputPath    : [out] 
+   trigger_paths : [path]
+   end_paths     : [outputPath] //plot] //outputPath, plot] // outputPath
+
+} // end of physics block
+
+physics.producers.t0Finder.meanTimeOffset : 34 // 36.5 is for 1550V, 34 for 1625V. Different for Sim.
+//
+physics.producers.tracks.keepTrackDetailArtRecord : true
+// Set DCA params
+
+
+//physics.producers.tracks0.lockLowDCAs : 0.000
+physics.producers.tracks1.lockLowDCAs : 0.025
+physics.producers.tracks2.lockLowDCAs : 0.050
+physics.producers.tracks3.lockLowDCAs : 0.100
+physics.producers.tracks4.lockLowDCAs : 0.200
+physics.producers.tracks5.lockLowDCAs : 0.300
+physics.producers.tracks6.lockLowDCAs : 0.400
+physics.producers.tracks7.lockLowDCAs : 0.500
+physics.producers.tracks8.lockLowDCAs : 0.600
+physics.producers.tracks9.lockLowDCAs : 0.700
+physics.producers.tracks10.lockLowDCAs : 0.800
+physics.producers.tracks11.lockLowDCAs : 0.900
+physics.producers.tracks12.lockLowDCAs : 1.000
+physics.producers.tracks13.lockLowDCAs : 1.100
+physics.producers.tracks14.lockLowDCAs : 1.200
+physics.producers.tracks15.lockLowDCAs : 1.300
+physics.producers.tracks16.lockLowDCAs : 1.400
+physics.producers.tracks17.lockLowDCAs : 1.500
+physics.producers.tracks18.lockLowDCAs : 1.600
+physics.producers.tracks19.lockLowDCAs : 1.700
+physics.producers.tracks20.lockLowDCAs : 1.800
+physics.producers.tracks21.lockLowDCAs : 1.900
+physics.producers.tracks22.lockLowDCAs : 2.000
+physics.producers.tracks23.lockLowDCAs : 2.100
+physics.producers.tracks24.lockLowDCAs : 2.200
+physics.producers.tracks25.lockLowDCAs : 2.300
+physics.producers.tracks26.lockLowDCAs : 2.400
+physics.producers.tracks27.lockLowDCAs : 2.500

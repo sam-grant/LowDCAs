@@ -1,0 +1,358 @@
+// Generate plots from reconstructed tracks while scanning low DCA thresholds
+// This version does the entire straw radius in increments of 100 um, hence "extreme"
+
+// Sam Grant - Oct 2019 
+
+
+#include "messageParams.fcl"
+#include "geom/strawtracker.fcl"
+#include "conDBParams.fcl"
+
+process_name : plot
+
+source : {
+  module_type : RootInput
+  //fileNames : ["gm2tracker_reco.root"]
+  maxEvents   : -1
+}
+
+
+services : {
+
+  message : {
+    debugModules : []
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "LowDCAsPlotsExtreme-25-11-19.log"
+//        filename  : "LowDCAsPlots.log"
+        append    :  false
+        threshold : "INFO"
+        categories : @local::message_categories
+      }
+    }
+  } // end of message services
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  Geometry : { strawtracker : @local::strawtracker_geom }
+  StrawTrackerGeometry : {}
+  StrawTrackerGeometryConstants : { DatabaseURL : @local::condb_prod_params } // dev db is @local::condb_dev_params
+
+  TrackQuality : {}
+
+  TFileService: {
+    fileName: "LowDCAsPlotsExtreme-25-11-19.root"
+//    fileName: "LowDCAsPlots.root"
+  }
+
+} // end of services block
+physics : {
+
+
+  analyzers : {
+
+    plots0    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks0"
+      TrackInstanceName : "straws"
+      dirName : "plots0"
+      // pValueCut : 0.05
+      // No DCA cut
+    }
+
+    plots1    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks1"
+      TrackInstanceName : "straws"
+      dirName : "plots1"
+      // pValueCut : 0.05
+//     DCACut : 25.0 // mm
+    }
+
+    plots2    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks2"
+      TrackInstanceName : "straws"
+      dirName : "plots2"
+      // pValueCut : 0.05
+//      DCACut : 50.0 // mm
+    }
+
+    plots3    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks3"
+      TrackInstanceName : "straws"
+      dirName : "plots3"
+      // pValueCut : 0.05
+//      DCACut : 100.0 // mm
+    }
+
+    plots4    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks4"
+      TrackInstanceName : "straws"
+      dirName : "plots4"
+      // pValueCut : 0.05
+//      DCACut : 200.0 // mm
+    }
+
+    plots5    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks5"
+      TrackInstanceName : "straws"
+      dirName : "plots5"
+      // pValueCut : 0.05
+//      DCACut : 300.0 // mm
+    }
+
+    plots6   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks6"
+      TrackInstanceName : "straws"
+      dirName : "plots6"
+      // pValueCut : 0.05
+//      DCACut : 400.0 // mm
+    }
+
+    plots7   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks7"
+      TrackInstanceName : "straws"
+      dirName : "plots7"
+      // pValueCut : 0.05
+//      DCACut : 500.0 // mm
+    }
+
+    plots8   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks8"
+      TrackInstanceName : "straws"
+      dirName : "plots8"
+      // pValueCut : 0.05
+//      DCACut : 1000.0 // mm
+    }
+
+    plots9   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks9"
+      TrackInstanceName : "straws"
+      dirName : "plots9"
+      // pValueCut : 0.05
+//      DCACut : 1500.0 // mm
+    }
+
+    plots10   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks10"
+      TrackInstanceName : "straws"
+      dirName : "plots10"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots11   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks11"
+      TrackInstanceName : "straws"
+      dirName : "plots11"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots12   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks12"
+      TrackInstanceName : "straws"
+      dirName : "plots12"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots13   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks13"
+      TrackInstanceName : "straws"
+      dirName : "plots13"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots14   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks14"
+      TrackInstanceName : "straws"
+      dirName : "plots14"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots15   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks15"
+      TrackInstanceName : "straws"
+      dirName : "plots15"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots16   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks16"
+      TrackInstanceName : "straws"
+      dirName : "plots16"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+  
+    plots17   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks17"
+      TrackInstanceName : "straws"
+      dirName : "plots17"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots18   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks18"
+      TrackInstanceName : "straws"
+      dirName : "plots18"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots19   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks19"
+      TrackInstanceName : "straws"
+      dirName : "plots19"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots20   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks20"
+      TrackInstanceName : "straws"
+      dirName : "plots20"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots21   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks21"
+      TrackInstanceName : "straws"
+      dirName : "plots21"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots22   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks22"
+      TrackInstanceName : "straws"
+      dirName : "plots22"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots23   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks23"
+      TrackInstanceName : "straws"
+      dirName : "plots23"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots24   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks24"
+      TrackInstanceName : "straws"
+      dirName : "plots24"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots25   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks25"
+      TrackInstanceName : "straws"
+      dirName : "plots25"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots26   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks26"
+      TrackInstanceName : "straws"
+      dirName : "plots26"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+
+    plots27   : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks27"
+      TrackInstanceName : "straws"
+      dirName : "plots27"
+      // pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+    }
+  } // ana
+
+  plot : [ plots0, plots1, plots2, plots3, plots4, plots5,
+   plots6, plots7, plots8, plots9, plots10, plots11, 
+   plots12, plots13, plots14, plots15, plots16, 
+   plots17, plots18, plots19, plots20, plots21,
+   plots22, plots23, plots24, plots25, plots26, 
+   plots27 ] 
+
+  trigger_paths : [] 
+  end_paths     : [plot]
+
+} // end of physics block
+

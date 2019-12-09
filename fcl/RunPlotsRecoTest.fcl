@@ -1,0 +1,79 @@
+// Simplied version of reconstruction plotting fcl - for debugging
+// Sam Grant - Dec 2019
+
+#include "messageParams.fcl"
+#include "geom/strawtracker.fcl"
+#include "conDBParams.fcl"
+
+process_name : plot
+
+source : {
+  module_type : RootInput
+  //fileNames : ["gm2tracker_reco.root"]
+  maxEvents   : -1
+}
+
+
+services : {
+
+  message : {
+    debugModules : []
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "RecoTestPlots.log"
+//        filename  : "LowDCAsPlots.log"
+        append    :  false
+        threshold : "INFO"
+        categories : @local::message_categories
+      }
+    }
+  } // end of message services
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  Geometry : { strawtracker : @local::strawtracker_geom }
+  StrawTrackerGeometry : {}
+  StrawTrackerGeometryConstants : { DatabaseURL : @local::condb_prod_params } // dev db is @local::condb_dev_params
+
+  TrackQuality : {}
+
+  TFileService: {
+    fileName: "RecoTestPlots.root"
+//    fileName: "LowDCAsPlots.root"
+  }
+
+} // end of services block
+physics : {
+
+
+  analyzers : {
+
+    plots0    : {
+      module_type : LowDCAsPlots
+      //SelectEvents:["filterLaserFills"]
+      TrackModuleLabel : "tracks0"
+      TrackInstanceName : "straws"
+      dirName : "plots0"
+      }
+
+  } // ana
+
+  plot : [ plots0 ] 
+
+  trigger_paths : [] 
+  end_paths     : [plot]
+
+} // end of physics block
+

@@ -1,0 +1,687 @@
+=============================================
+Processing file: FileList0/gm2tracker_particle_gun_full_0.root
+# Read SQLiteDB from file, total size: 1.9 MiB.
+
+artg4: {
+   afterEvent: "pass"
+   enableVisualization: false
+   macroPath: ".:./macros:../macros:../../macros"
+   module_type: "artg4Main"
+   visMacro: "vis.mac"
+}
+
+clustering: {
+   clusterPositionError: 2.5
+   maxDigitsOnIsland: 250
+   module_type: "ClusterFormation"
+}
+
+deadTime: {
+   module_type: "ImposeDeadTime"
+}
+
+digitTimeSync: {
+   module_type: "DigitTimeSyncer"
+}
+
+digitizer: {
+   allowNegativeTimes: true
+   driftTimeModelName: "GarfieldDriftModel"
+   driftTimeResolution: 2.747253
+   driftVelocity: 5.46e-2
+   includeSecondaryEloss: true
+   kineticEnergyThreshold: 1
+   module_type: "Digitalizer"
+   promoteSecondaryToDigit: true
+   removeFailedEfficHits: true
+   smearedDriftTimeSeed: 0
+}
+
+driftDistReco: {
+   calculatorName: "dataDerivedEstimator"
+   driftTimeResolution: 2.747253
+   driftVelocity: 5.46e-2
+   module_type: "DriftDistanceCal"
+   useDatabase: false
+   useTrueDigitT0: false
+}
+
+fillEvents: {
+   KeepCaloHits: false
+   KeepFiberHarpHits: false
+   KeepGhostDetHits: true
+   KeepGhostFiberHarpHits: false
+   KeepIBMSFiberHits: false
+   KeepIBMSTruthHits: false
+   KeepKillTracks: false
+   KeepLookupHits: false
+   KeepRingTrackingHits: true
+   KeepStrawHits: true
+   KeepTrackingActions: false
+   KeepTrajectories: false
+   KeepXtalHits: false
+   MaxEventsPerFile: -1
+   Seed: 54321
+   StoredMuons: 1
+   StoredMuonsSigma: 0
+   errorOnFailureToPut: false
+   module_type: "FillBuilder"
+}
+
+killStraws: {
+   module_type: "KillStraws"
+}
+
+out: {
+   SelectEvents: [
+      "path"
+   ]
+   dataTier: "full"
+   fileName: "gm2tracker_particle_gun_full.root"
+   module_type: "RootOutput"
+   outputCommands: [
+      "keep *",
+      "drop gm2truth*_*_*_mdc*",
+      "drop gm2truth::GhostDetectorArtRecords_artg4_trackerdummyplane_*",
+      "drop gm2strawtracker::StrawDigitArtRecords_removeFlash_*_*",
+      "drop gm2strawtracker::StrawDigitArtRecords_killStraws_*_*",
+      "drop gm2strawtracker::StrawDigitArtRecords_digitTimeSync_*_*",
+      "drop gm2strawtracker::StrawSeedArtRecords_seeds_*_*",
+      "drop gm2strawtracker::TrackCandidateArtRecords_trackCandidates_*_*"
+   ]
+   streamName: "out"
+}
+
+out1: {
+   FCMDPlugins: [
+      {
+         campaign: "run1_gasgun"
+         fhicl_name: "gm2ringsim_muon_gasgun_truth_22551215_1567190852.1.fcl"
+         plugin_type: "Metadata"
+         requestid: "1062"
+         run_config: "nominal"
+      }
+   ]
+   dataTier: "truth"
+   fileName: "gm2ringsim_muon_gasgun_truth_22551215_1567190852.1.root"
+   module_type: "RootOutput"
+   outputCommands: [
+      "keep *",
+      "drop art::TriggerResults_TriggerResults__mdc1",
+      "drop art::RNGsnapshots_randomsaver__mdc1",
+      "drop gm2truth::IBMSFiberArtRecords_artg4_ibms_mdc1",
+      "drop gm2truth::IBMSTruthArtRecords_artg4_ibms_mdc1",
+      "drop gm2truth::KillTracksArtRecords_artg4__mdc1",
+      "drop gm2truth::LookupArtRecords_artg4_calorimeter_mdc1",
+      "drop gm2truth::RingArtRecords_artg4_Ring_mdc1",
+      "drop gm2truth::TrackingActionArtRecords_artg4__mdc1",
+      "drop gm2truth::XtalArtRecords_artg4_calorimeter_mdc1",
+      "drop gm2truth::XtalPhotonArtRecords_artg4_calorimeter_mdc1"
+   ]
+   streamName: "out1"
+}
+
+randomsaver: {
+   module_type: "RandomNumberSaver"
+}
+
+removeFlash: {
+   module_type: "RemoveFlash"
+}
+
+seeds: {
+   driftCircleNSteps: 50
+   dummyDigitDriftDistance: 2.5
+   maxClusterTimeSeparation: 50
+   maxPlaneGapsInSeed: 0
+   maxWireSeparation: 1
+   module_type: "SeedFormation"
+   positionErrorSet: {
+      digit1: [
+         1,
+         28,
+         8e-1
+      ]
+      digit2: [
+         1.5,
+         27,
+         5e-1
+      ]
+      digit3: [
+         7.5e-1,
+         18,
+         4e-1
+      ]
+      digit4: [
+         7.5e-1,
+         20,
+         4e-1
+      ]
+      rError: [
+         1,
+         8.5e-1,
+         4e-1,
+         4e-1
+      ]
+   }
+   reconstructPosition: false
+   relaxWireSeparation: 3
+   removeDuplicateSeeds: false
+   threeDimPositionModel: "UseDriftCircleEstimator"
+   useClusterTimingCut: true
+   useGeometryLR: true
+}
+
+source: {
+   fileNames: [
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551200_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551201_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551202_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551203_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551204_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551205_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551206_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551207_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551208_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551209_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551210_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551211_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551212_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551213_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551214_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551215_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551216_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551217_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551219_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551220_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551221_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551222_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551223_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551224_1567190852.1.root",
+      "/pnfs/GM2/mc/run1_gasgun_1062/runs_1567190000/1567190852/gm2ringsim_muon_gasgun_truth_22551225_1567190852.1.root"
+   ]
+   maxEvents: -1
+   module_type: "RootInput"
+}
+
+t0Finder: {
+   calculatorName: "meanTime"
+   createIslandForFailT0: true
+   driftVelocity: 5.46e-2
+   meanTimeOffset: 2.46e1
+   module_type: "T0Finder"
+   tofBetweenModules: 4.5e-1
+}
+
+timeIslands: {
+   absoluteTimeWindowWidth: 100
+   finerTimeWindowWidth: 20
+   maxTimeWindowWidth: 80
+   module_type: "TimeIsland"
+   relativeTimeWindowWidth: 100
+   sortRealDigits: true
+   sortSimDigits: true
+   useAbsoluteTimeWindowWidth: false
+}
+
+trackCandidates: {
+   dcaTolerance: 10
+   fastFitterParams: {
+      fitterName: "SimpleCircleFitter"
+      linearFitterSorter: "NoFitter"
+      maxCircleChi2Formation: 50
+      maxLinearChi2Formation: 50
+      maxProjectionCovariance: 1
+      maxProjectionTolerance: 25
+      maxRadialFieldComponent: 5e-2
+      maxSlopeCovariance: 1
+      maxSlopeTolerance: 25
+      requiredFitConverges: false
+      requiredMergeConsistent: false
+      useHitsInFringeField: false
+      useTruthData: false
+   }
+   longTrackFinderParams: {
+      applyClusterSelection: true
+      avgSeedRMSTime: 5
+      candidateSeedsMaxTime: 15
+      candidateSeedsMaxWire: 5
+      candidateSeedsStrictTime: 5
+      candidateTracksMaxTime: 60
+      maxOverlapSeeds: 5e-1
+      maxSeedsInChain: 5
+      maxSeedsToBeMultiTrackCand: 8
+      maxTimeSeparation: 75
+      maxWireNumbersBetweenSeeds: 4
+      maxWireSeparation: 5
+      maxWireSeparationForNeighbours: 32
+      minPlanesPerFit: 5
+      minSeedsForRemoval: 2
+      minSeedsPerFit: 2
+      nSeedsNearRefSeed: 4
+      removeHighActivityModules: true
+      requiredFitConverges: false
+      shareSeeds: false
+      timeSeparationTolerance: 25
+      useFrontFaceFiducialCriteria: false
+      wireMoveDisplacement: 2
+   }
+   makeLongFinderPlots: false
+   maxSeedsOnIsland: 75
+   module_type: "TrackFinding"
+   trackFinderName: "LongTrackFinder"
+}
+
+tracks: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 0
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks0: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 0
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks1: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 2.5e-2
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks10: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 2.5e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks11: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 2.75e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks12: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 3e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks13: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 3.25e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks14: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 3.5e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks15: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 3.75e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks16: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 4e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks17: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 4.25e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks18: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 4.5e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks19: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 4.75e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks2: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 5e-2
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks20: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 5e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks3: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 7.5e-2
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks4: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 1e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks5: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 1.25e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks6: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 1.5e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks7: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 1.75e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks8: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 2e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+tracks9: {
+   G4EVERBOSE: 0
+   convergenceCriteria: 1e-1
+   fitMode: "mainFit"
+   fitterType: "fullFitter"
+   lockLowDCAs: 2.25e-1
+   matrixDebug: false
+   module_type: "GeaneReco"
+   numPassesSeqFit: 3
+   numPassesWireFit: 3
+   onlyPrimaryPositrons: false
+   trackingVerbose: 0
+   useCircleGuess: true
+   useNodes: false
+   useTangentLR: true
+}
+
+vertices: {
+   checkVolumes: true
+   cutPoorPValues: false
+   distanceBeyondTangentPoint: 10
+   doBackwardsExtrap: true
+   doForwardsExtrap: false
+   extrapolateToTrueAzimuth: false
+   extrapolater: "RKExtrapolater"
+   extrapolationDistance: 1000
+   fillTruthData: true
+   initialRadius: 45
+   keepHitVolumes: true
+   keepSteps: false
+   largeStepSize: 2e-2
+   minNumPlanes: 0
+   module_type: "TrackExtrapolation"
+   numberOfSteps: 10000
+   onlyKeepStepsInVolume: false
+   onlyKeepVolumeEvents: false
+   pValueCut: 5e-3
+   pmax: 99999
+   pmin: 0
+   returnAtHitVolume: false
+   returnAtTangentPoint: true
+   smallStepSize: 5e-2
+   smearStartMomentum: false
+   smearingFactor: 2e-2
+   stepSize: 5e-1
+   stepsBeyondMin: 5
+   storeFailedEvents: false
+   targetZpos: -7.06e1
+   tolerance: 0
+   useLargeStepsInStorageField: true
+   useOnlyPDPs: true
+   useSmallStepsAtLowRadius: true
+   useSmallStepsNearTangentPoint: true
+   useTruth: false
+}
+

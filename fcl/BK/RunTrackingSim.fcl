@@ -1,0 +1,181 @@
+#include "messageParams.fcl"
+#include "trackingConfig.fcl"
+#include "caloConfig.fcl"
+
+process_name : offline
+
+source : 
+{
+  module_type : RootInput
+  maxEvents   : -1
+}
+
+services : 
+{
+  FileCatalogMetadata : {
+      applicationFamily  : "tracker"
+      applicationVersion : "v9_18_00"
+      fileType           : "offline"
+  }
+
+  message : {
+    debugModules : []
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "gm2tracker_particle_gun_full.log"
+        append    :  false
+        threshold : "INFO"
+        categories : @local::message_categories
+      }
+    }
+  } #end of message services
+ 
+
+  // the coordinate system data is used throughout the tracking code
+  // for now, the tracking uses GEANT for the coordinates
+  // to build the coordinates requires dependent on artg4
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  @table::trackingChain.reducedGeometry
+  @table::trackingChain.field
+
+  Database: {
+    conDBHost  : 'dbdata0vm.fnal.gov'
+    conDBPort  : '9091'
+    conDBName  : 'postgres_dev'
+  }
+
+  scheduler : { errorOnFailureToPut : false }
+  TrackQuality : {}
+  TemplateFitterHolder : {
+       storeSplines : false
+       isSimulation : true
+  }
+
+  TFileService : {
+    fileName : "TrackCaloRecoPlots.root"
+  }
+} // end of services block
+   
+
+
+physics : 
+{
+  producers : {
+
+      trackCaloMatching : {
+	 module_type           : TrackCaloMatching
+	 clusterModuleLabel    : hitClusterSim
+	 clusterInstanceLabel  : cluster
+	 coincidenceTimeWindow : [-15,10] // ns
+      }
+
+     // digitization of simulation
+     digitizer : @local::digit_params
+
+     // Reco chain
+     @table::trackingChain.producers
+     @table::caloChain.producers
+  } # end of producer block 
+   
+   analyzers : {
+    trackCaloMatchingAnaTrack : {
+      module_type : TrackCaloMatchingAna
+      SelectEvents : [ "strawPathwithDQC" ]
+      applyTrackQuality : true
+      applyCaloVertexQuality : false
+      applyPositronVertexQuality : false
+      applyLostMuonVertexQuality : false
+      dirName : TrackQuality
+      }
+
+    trackCaloMatchingAnaPositron : {
+      module_type : TrackCaloMatchingAna
+      SelectEvents : [ "strawPathwithDQC" ]
+      applyTrackQuality : true
+      applyCaloVertexQuality : true
+      applyPositronVertexQuality : true
+      applyLostMuonVertexQuality : false
+      dirName : PositronQuality
+      }
+   }
+ 
+ filters : {
+
+     // Put many muons into same fill 
+     fillEvents : @local::fill_params
+     noDigitsFilter : {module_type : NoDigitsFilter} 
+//     trackFilter : {module_type : TrackFilter}
+     trackCaloMatchMCFilter : {module_type : TrackCaloMatchMCFilter}
+  } # end of filter block
+
+  // Note this doesn't have DQC but we have to put this name here or we'd need different
+  // versions of RunTrackingPlots for data and MC!
+    strawPathwithDQC : [fillEvents, digitizer,  @sequence::trackingChain.trackingPath, noDigitsFilter, @sequence::caloChain.caloSimPath, trackCaloMatching]
+//  strawPathwithDQC : [trackFilter, fillEvents, digitizer,  @sequence::trackingChain.trackingPath, @sequence::caloChain.caloSimPath, trackCaloMatching]
+//  strawPathwithDQC : [trackFilter, fillEvents, digitizer,  @sequence::trackingChain.trackingPath, @sequence::caloChain.caloSimPath, trackCaloMatching, trackCaloMatchMCFilter]
+  outputPath    : [out] 
+  plotPath : [ trackCaloMatchingAnaTrack, trackCaloMatchingAnaPositron ] 
+  trigger_paths : [strawPathwithDQC]//, caloPath]
+  end_paths     : [plotPath]
+} # end of physics block
+
+outputs :
+{
+  out : { 
+     module_type  : RootOutput
+     fileName     : "gm2tracker_particle_gun_full.root"
+     dataTier     : "full"
+     outputCommands : [ "keep *",
+	                //"drop gm2truth*_*_*_mdc*",
+                        @sequence::trackingChain.outputDrops,
+			"drop gm2calo::Rider*_*_*_*",
+			"drop gm2calo::CaloRiderView*_*_*_*",
+			"drop gm2calo::CaloCrystalHit*_*_*_*",
+			"drop gm2calo::IslandArtRecord*_*_*_*",
+			"drop gm2calo::RiderArtRecord*_*_*_*"
+                      ]		
+		      
+     SelectEvents : ["	strawPathwithDQC"] 
+     //FCMDPlugins  : [ { plugin_type : Metadata 
+     //                   fhicl_name  : "gm2tracker_particle_gun_full.fcl"
+     //                   requestid   : "1"
+     //                   run_config  : "commission" }]
+  }
+
+} # end of outputs block
+
+# dca calc patched parameters
+physics.producers.driftDistReco.calculatorName : garfieldDriftDistanceEstimator
+
+# t0 finder patches
+physics.producers.t0Finder.meanTimeOffset : 24.6
+
+# Don't shift TDC times (this is only to align cable lengths in data)
+physics.producers.digitTimeSync.tdcOffsets : [0,0,0,0]
+physics.producers.digitTimeSync.perStationCaloSyncOffsets : [0,0,0]
+physics.producers.waveformBuilder.caloModuleLabel : artg4
+physics.producers.waveformBuilder.caloInstanceLabel : calorimeter 
+physics.producers.waveformBuilder.verboseLevel : 0
+
+# Overwrite everything with truth parameters!  No measurement errors!
+physics.producers.driftDistReco.useTrueDigitT0 : true
+physics.producers.tracks.fitMode : "truthLRFit"
+physics.producers.digitizer.driftTimeModelName : "GaussianDriftModel"
+physics.producers.driftDistReco.calculatorName : "linearDriftDistanceEstimator"
+physics.filters.fillEvents.KeepGhostDetHits    : true
+// Limit calos to one thread
+services.scheduler.num_threads : 1

@@ -1,0 +1,246 @@
+
+
+#include "messageParams.fcl"
+#include "trackingConfig.fcl"
+#include "caloConfig.fcl"
+
+process_name : offline
+
+source : 
+{
+  module_type : RootInput
+  maxEvents   : -1
+}
+
+services : 
+{
+  FileCatalogMetadata : {
+      applicationFamily  : "tracker"
+      applicationVersion : "v9_33_00"
+      fileType           : "offline"
+  }
+
+  message : {
+    debugModules : []
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "gm2tracker_sim_scan.log"
+        append    :  false
+        threshold : "INFO"
+        categories : @local::message_categories
+      }
+    }
+  } // end of message services
+ 
+
+  // the coordinate system data is used throughout the tracking code
+  // for now, the tracking uses GEANT for the coordinates
+  // to build the coordinates requires dependent on artg4
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  @table::trackingChain.reducedGeometry
+  @table::trackingChain.field
+
+//  Database: {
+//    conDBHost  : 'dbdata0vm.fnal.gov'
+//    conDBPort  : '9091'
+//    conDBName  : 'postgres_dev'
+//  }
+
+  scheduler : { errorOnFailureToPut : false }
+  TrackQuality : {}
+
+//  TemplateFitterHolder : {
+//       storeSplines : false
+//       isSimulation : true
+//  }
+
+} // end of services block
+   
+
+
+physics : 
+
+{
+  producers : {
+
+//      trackCaloMatching : {
+//	 module_type           : TrackCaloMatching
+//	 clusterModuleLabel    : hitClusterSim
+//	 clusterInstanceLabel  : cluster
+//	 coincidenceTimeWindow : [-15,10] // ns
+//      }
+
+     // digitization of simulation
+     digitizer : @local::digit_params
+
+
+
+     @table::trackingChain.producers
+      
+     // Fit the tracks
+     tracks0 : @local::geanefit_params // 0 um 
+     tracks1 : @local::geanefit_params // 25 um 
+     tracks2 : @local::geanefit_params // 50 um 
+     tracks3 : @local::geanefit_params // 75 um 
+     tracks4 : @local::geanefit_params // 100 um 
+     tracks5 : @local::geanefit_params // 125 um 
+     tracks6 : @local::geanefit_params // 150 um 
+     tracks7 : @local::geanefit_params // 175 um 
+     tracks8 : @local::geanefit_params // 200 um 
+     tracks9 : @local::geanefit_params // 225 um 
+     tracks10 : @local::geanefit_params // 250 um 
+     tracks11 : @local::geanefit_params // 275 um 
+     tracks12 : @local::geanefit_params // 300 um 
+     tracks13 : @local::geanefit_params // 325 um 
+     tracks14 : @local::geanefit_params // 350 um 
+     tracks15 : @local::geanefit_params // 375 um 
+     tracks16 : @local::geanefit_params // 400 um 
+     tracks17 : @local::geanefit_params // 425 um 
+     tracks18 : @local::geanefit_params // 450 um 
+     tracks19 : @local::geanefit_params // 475 um 
+     tracks20 : @local::geanefit_params // 500 um
+
+     // Reco chain
+    // @table::trackingChain.producers
+  //   @table::caloChain.producers
+  } // end of producer block 
+   
+  
+ 
+ filters : {
+
+     // Put many muons into same fill 
+     fillEvents : @local::fill_params
+  
+  } // end of filter block
+
+  // Note this doesn't have DQC but we have to put this name here or we'd need different
+  // versions of RunTrackingPlots for data and MC!
+   // strawPathwithDQC : [fillEvents, digitizer,  @sequence::trackingChain.trackingPath, noDigitsFilter, @sequence::caloChain.caloSimPath, trackCaloMatching]
+//  strawPathwithDQC : [trackFilter, fillEvents, digitizer,  @sequence::trackingChain.trackingPath, @sequence::caloChain.caloSimPath, trackCaloMatching]
+//  strawPathwithDQC : [trackFilter, fillEvents, digitizer,  @sequence::trackingChain.trackingPath, @sequence::caloChain.caloSimPath, trackCaloMatching, trackCaloMatchMCFilter]
+  // My path, reconstructing tracks with different lockLowDCA values
+   path : [ 
+     artg4,
+     fillEvents,
+     digitizer,
+     removeFlash,
+     killStraws,
+     digitTimeSync,
+     deadTime,
+     timeIslands,
+     clustering,
+     seeds,
+     trackCandidates,
+     t0Finder,
+     driftDistReco,
+     tracks0,
+     tracks1,
+     tracks2,
+     tracks3, 
+     tracks4,
+     tracks5,
+     tracks6,
+     tracks7,
+     tracks8,
+     tracks9,
+     tracks10,
+     tracks11,
+     tracks12,
+     tracks13,
+     tracks14,
+     tracks15,
+     tracks16,
+     tracks17,
+     tracks18,
+     tracks19,
+     tracks20
+     ] 
+
+
+  outputPath    : [out] 
+  // plotPath : [ trackCaloMatchingAnaTrack, trackCaloMatchingAnaPositron ] 
+  trigger_paths : [path]//, caloPath]
+  end_paths     : [outputPath]
+} // end of physics block
+
+outputs :
+{
+  out : { 
+     module_type  : RootOutput
+     fileName     : "gm2tracker_sim_scan.root"
+     dataTier     : "full"
+     outputCommands : [ "keep *",
+	                "drop gm2truth*_*_*_mdc*",
+                   @sequence::trackingChain.outputDrops
+		//	"drop gm2calo::Rider*_*_*_*",
+		//	"drop gm2calo::CaloRiderView*_*_*_*",
+		//	"drop gm2calo::CaloCrystalHit*_*_*_*",
+		//	"drop gm2calo::IslandArtRecord*_*_*_*",
+		//	"drop gm2calo::RiderArtRecord*_*_*_*"
+                      ]		
+		      
+     SelectEvents : ["path"] 
+     //FCMDPlugins  : [ { plugin_type : Metadata 
+     //                   fhicl_name  : "gm2tracker_particle_gun_full.fcl"
+     //                   requestid   : "1"
+     //                   run_config  : "commission" }]
+  }
+
+} // end of outputs block
+// dca calc patched parameters
+
+// This changes the first three points
+physics.producers.driftDistReco.calculatorName : garfieldDriftDistanceEstimator
+// 
+source.firstRun    : 1
+source.firstSubRun : 1
+
+// t0 finder patches
+physics.producers.t0Finder.meanTimeOffset : 24.6
+// version 33 patches
+//physics.filters.fillEvents.KeepTrackingActions : true
+//physics.producers.vertices.doForwardsExtrap : false
+
+// jmott 2:15 PM
+physics.filters.fillEvents.KeepGhostDetHits    : true
+physics.filters.fillEvents.KeepTrajectories    : true
+physics.filters.fillEvents.KeepTrackingActions : false
+
+// physics.producers.tracks0.lockLowDCAs : 0.000 // Default is zero anyway
+physics.producers.tracks1.lockLowDCAs : 0.025
+physics.producers.tracks2.lockLowDCAs : 0.050
+physics.producers.tracks3.lockLowDCAs : 0.075
+physics.producers.tracks4.lockLowDCAs : 0.100
+physics.producers.tracks5.lockLowDCAs : 0.125
+physics.producers.tracks6.lockLowDCAs : 0.150
+physics.producers.tracks7.lockLowDCAs : 0.175
+physics.producers.tracks8.lockLowDCAs : 0.200
+physics.producers.tracks9.lockLowDCAs : 0.225
+physics.producers.tracks10.lockLowDCAs : 0.250
+physics.producers.tracks11.lockLowDCAs : 0.275
+physics.producers.tracks12.lockLowDCAs : 0.300
+physics.producers.tracks13.lockLowDCAs : 0.325
+physics.producers.tracks14.lockLowDCAs : 0.350
+physics.producers.tracks15.lockLowDCAs : 0.375
+physics.producers.tracks16.lockLowDCAs : 0.400
+physics.producers.tracks17.lockLowDCAs : 0.425
+physics.producers.tracks18.lockLowDCAs : 0.450
+physics.producers.tracks19.lockLowDCAs : 0.475
+physics.producers.tracks20.lockLowDCAs : 0.500
+
+

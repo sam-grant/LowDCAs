@@ -1,0 +1,219 @@
+
+
+#include "messageParams.fcl"
+#include "geom/strawtracker.fcl"
+#include "conDBParams.fcl"
+
+process_name : plot
+
+source : {
+  module_type : RootInput
+  //fileNames : ["gm2tracker_reco.root"]
+  maxEvents   : -1
+}
+
+
+services : {
+
+  message : {
+    debugModules : []
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "RecoScanPlots.log"
+//        filename  : "LowDCAsPlots.log"
+        append    :  false
+        threshold : "INFO"
+        categories : @local::message_categories
+      }
+    }
+  } // end of message services
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  Geometry : { strawtracker : @local::strawtracker_geom }
+  StrawTrackerGeometry : {}
+  StrawTrackerGeometryConstants : { DatabaseURL : @local::condb_prod_params } // dev db is @local::condb_dev_params
+
+  TrackQuality : {}
+
+  TFileService: {
+    fileName: "RecoScanPlots.root"
+//    fileName: "LowDCAsPlots.root"
+  }
+
+} // end of services block
+physics : {
+
+
+  analyzers : {
+
+    plots0    : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks0"
+      TrackInstanceName : "straws"
+      dirName : "plots0"
+     }
+
+    plots1    : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks1"
+      TrackInstanceName : "straws"
+      dirName : "plots1"
+    }
+
+    plots2    : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks2"
+      TrackInstanceName : "straws"
+      dirName : "plots2"
+    }
+
+    plots3    : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks3"
+      TrackInstanceName : "straws"
+      dirName : "plots3"
+    }
+
+    plots4    : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks4"
+      TrackInstanceName : "straws"
+      dirName : "plots4"
+    }
+
+    plots5    : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks5"
+      TrackInstanceName : "straws"
+      dirName : "plots5"
+    }
+
+    plots6   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks6"
+      TrackInstanceName : "straws"
+      dirName : "plots6"
+    }
+
+    plots7   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks7"
+      TrackInstanceName : "straws"
+      dirName : "plots7"
+    }
+
+    plots8   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks8"
+      TrackInstanceName : "straws"
+      dirName : "plots8"
+    }
+
+    plots9   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks9"
+      TrackInstanceName : "straws"
+      dirName : "plots9"
+    }
+
+    plots10   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks10"
+      TrackInstanceName : "straws"
+      dirName : "plots10"
+    }
+
+    plots11   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks11"
+      TrackInstanceName : "straws"
+      dirName : "plots11"
+    }
+
+    plots12   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks12"
+      TrackInstanceName : "straws"
+      dirName : "plots12"
+    }
+
+    plots13   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks13"
+      TrackInstanceName : "straws"
+      dirName : "plots13"
+    }
+
+    plots14   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks14"
+      TrackInstanceName : "straws"
+      dirName : "plots14"
+    }
+
+    plots15   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks15"
+      TrackInstanceName : "straws"
+      dirName : "plots15"
+    }
+
+    plots16   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks16"
+      TrackInstanceName : "straws"
+      dirName : "plots16"
+    }
+  
+    plots17   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks17"
+      TrackInstanceName : "straws"
+      dirName : "plots17"
+    }
+
+    plots18   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks18"
+      TrackInstanceName : "straws"
+      dirName : "plots18"
+     }
+
+    plots19   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks19"
+      TrackInstanceName : "straws"
+      dirName : "plots19"
+    }
+
+    plots20   : {
+      module_type : LowDCAsPlots
+      TrackModuleLabel : "tracks20"
+      TrackInstanceName : "straws"
+      dirName : "plots20"
+    }
+
+  } // ana
+
+  plot : [ plots0, plots1, plots2, plots3, plots4, plots5,
+   plots6, plots7, plots8, plots9, plots10, plots11, 
+   plots12, plots13, plots14, plots15, plots16, 
+   plots17, plots18, plots19, plots20 ] 
+
+  trigger_paths : [] 
+  end_paths     : [plot]
+
+} // end of physics block

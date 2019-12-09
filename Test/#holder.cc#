@@ -1,0 +1,164 @@
+// Specialised plotter for low DCA study
+// Based very heavily on GeanePlots_module.cc
+// Sam Grant - Oct 2019
+
+// Include needed ART headers
+#include "art/Framework/Core/EDAnalyzer.h"
+#include "art/Framework/Core/ModuleMacros.h"
+#include "art/Framework/Principal/Event.h"
+#include "art/Framework/Services/Optional/TFileService.h"
+#include "art/Framework/Services/Registry/ServiceHandle.h"
+#include "canvas/Persistency/Common/FindManyP.h"
+
+//art records
+#include "gm2dataproducts/strawtracker/StrawDigitArtRecord.hh"
+#include "gm2dataproducts/strawtracker/StrawDCADigitArtRecord.hh"
+#include "gm2dataproducts/strawtracker/StrawTimeIslandArtRecord.hh"
+#include "gm2dataproducts/strawtracker/TrackCandidateArtRecord.hh"
+#include "gm2dataproducts/strawtracker/TrackArtRecord.hh"
+#include "gm2dataproducts/strawtracker/TrackDetailArtRecord.hh"
+#include "gm2dataproducts/mc/ghostdetectors/GhostDetectorArtRecord.hh"
+
+//Utils
+#include "gm2geom/common/Gm2Constants_service.hh"
+#include "gm2util/common/dataModuleDefs.hh"
+#include "gm2util/common/RootManager.hh"
+#include "gm2util/coordSystems/CoordSystemUtils.hh"
+#include "gm2tracker/quality/TrackQuality_service.hh"
+#include "gm2geom/strawtracker/StrawTrackerGeometry_service.hh"
+#include "gm2tracker/utils/GeaneTrackUtils.hh"
+#include "gm2tracker/utils/GeaneDummyUtils.hh"
+
+//Geometry
+#include "gm2geom/coordSystems/CoordSystemsStoreData.hh"  // Coordinate transform for Residual calc.
+#include "gm2geom/strawtracker/StrawTrackerGeometry_service.hh"  // Residual calc. 
+#include "gm2util/coordSystems/CoordSystemUtils.hh" // Coordinate transform for Residual calc. 
+
+//C++ includes
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <set>
+#include <math.h> 
+
+#include <Eigen/Dense>
+#include "gm2tracker/utils/GeaneEigenStorageUtils.hh"
+#include "gm2tracker/utils/TrackDetailArtRecordUtils.hh"
+
+namespace gm2strawtracker {
+
+  //
+  // Class declaration
+  //
+  class LowDCAsPlots : public art::EDAnalyzer {
+
+  public:
+
+    explicit LowDCAsPlots(fhicl::ParameterSet const& pset);
+
+    //Override desired art::EDAnalyzer functions
+    void analyze(const art::Event& event ) override;
+    void beginJob() override;
+    void beginRun(art::Run const & r) override;
+    void endRun(art::Run const & r) override;
+
+  private:
+
+    std::string name_;
+
+    //Producer labels
+
+    std::string DummyModuleLabel_;
+    std::string DummyInstanceName_;
+
+    std::string TrackModuleLabel_;
+    std::string TrackInstanceName_;
+
+    std::string dcaDigitModuleLabel_;
+    std::string dcaDigitInstanceLabel_;
+
+    //ROOT plotting members
+    std::unique_ptr<RootManager> rootManager_;
+    std::string dirName_;
+
+    std::vector< std::string > planeFolderNames_;
+
+    //Helper tools
+    gm2geom::CoordSystemsStoreData cs_;
+
+    gm2strawtracker::GeaneTrackUtils geaneTrackUtils_;
+
+    double pValueCut_;
+    double chi2Cut_;
+    int numPlanesHitCut_;
+    
+    vector<double> timeWindow_;
+    vector<double> momWindow_;
+
+    // Keep track of number of tracks and number of events to work out tracks per event for this run
+    int tracksInRun_;
+    int eventsInRun_;
+
+    // DCA cut
+    double DCACut_;
+
+    // For setting max/min values of plots (larger for wire fit)
+    std::string fitMode_;
+
+    gm2strawtracker::GeaneDummyUtils dummyUtils_;
+
+  }; //End of class Plotter
+
+
+  //
+  // Class implementation
+  //
+
+  LowDCAsPlots::LowDCAsPlots(fhicl::ParameterSet const& pset)
+    : art::EDAnalyzer(pset)
+    , name_( "LowDCAsPlots" )
+    , DummyModuleLabel_( pset.get<std::string>("DummyModuleLabel",dataModuleDefs::strawBuilderModuleLabel()) )
+    , DummyInstanceName_( pset.get<std::string>("DummyInstanceName","trackerdummyplane") )
+    , TrackModuleLabel_( pset.get<std::string>("TrackModuleLabel", dataModuleDefs::trackModuleLabel()) )
+    , TrackInstanceName_( pset.get<std::string>("TrackInstanceName", dataModuleDefs::recoInstanceLabel()) )
+      /*  , TrackModuleLabel_( pset.get<std::string>("TrackModuleLabel") )
+	  , TrackInstanceName_( pset.get<std::string>("TrackInstanceName") )*/
+    , dcaDigitModuleLabel_( pset.get<std::string>("dcaDigitModuleLabel",dataModuleDefs::dcaDigitModuleLabel()) )
+    , dcaDigitInstanceLabel_( pset.get<std::string>("dcaDigitInstanceLabel",dataModuleDefs::digitInstanceLabel()) )
+    , rootManager_()
+    , dirName_( pset.get<std::string>("dirName","FinalIteration") )
+    , cs_()
+    , geaneTrackUtils_()
+    , pValueCut_( pset.get<double>("pValueCut", 0.0) )
+    , chi2Cut_( pset.get<double>("chi2Cut", 0.0) )
+    , numPlanesHitCut_( pset.get<int>("numPlanesHitCut", 0))
+    , timeWindow_(pset.get<vector<set.get<vector<double> >("momWindow",{}))
+    , tracksInRun_(0)
+  s", 1000, 1000.5, 2000.5) );
+
+    TGraph* tgTracks = new TGraph();
+    tgTracks->SetName( "TracksPerEvent" );
+    tgTracks->SetTit, 100, -800, 800) );
+    rootManager_->Add( dir, new TH1F( "Pv", "; P-7000, -6500) );
+
+// Supposed to be the overall reddisual
+rootManager_->Add( dir, new TH1F( "UVresidualsMeasPoordSysModuleLabel(),dataModuleDefs::coordS_,TrackInstanceName_,TrackDataHandle);
+
+    std::cout<<"TrackModuleLabel_ : "<<TrackModule(firstTrackInEvent){
+    dummyUtils_.fillDummyHits(DummyDataHandle); // pass dummy hits to utils file
+    sttrack.candidate->island->meanTime > timeWindow_YPos(geaneHitsOnTrack, 0);
+    double predictedZPosition = geaneTrackUtils_.getPredZPos(geaneHitsOnTrace DCA minus the wire positions
+      // measured DCA minus the wire p1)<<std::endl;
+
+  //  }
+
+    std::cout<<"After changes"<<std::endl;
+
+      //for++){
+
+        // Fill vector of dcaDigits from Assn
+     kCandidate with id " << track.candidate->id << " was not found in );
+      rootManager_->Get<TH1F*>( topDir, "Pv" )-);
+      rootManager_->Get<TH1F*>(topDir, "DCA")->Fill(DCA);
+      gTracks->GetN(), r.run(), tracksIn

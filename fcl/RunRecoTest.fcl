@@ -1,0 +1,120 @@
+// Simplied version of track reconstruction fcl - for debugging
+// Sam Grant - Dec 2019
+
+#include "messageParams.fcl"
+#include "trackingConfig.fcl"
+
+process_name : offline
+
+// Input some unpacked data
+source : {
+  module_type : RootInput
+  maxEvents   : -1
+} 
+
+outputs : {
+  out : { 
+   module_type  : RootOutput
+   fileName     : "gm2tracker_reco_test.root"
+   dataTier     : "full"
+
+   outputCommands : [ "keep *",
+                        // Stop the unpacked data products appearing in ouput
+    "drop *::*_*_*_unpacking",
+    @sequence::trackingChain.outputDrops
+    ] 
+   SelectEvents : ["path"]
+  } // out
+} // end of outputs block
+
+// Services block
+services : {
+  FileCatalogMetadata : {
+    applicationFamily  : "tracker"
+    applicationVersion : "v9_33_00"
+    fileType           : "offline"
+  }
+  message : {
+    debugModules : [] // ["*"]
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO" // "DEBUG" //INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "gm2tracker_reco_test.log"
+        append    :  false
+        threshold : "INFO" // "DEBUG"
+        categories : @local::message_categories
+      }
+    }
+  }  // end of message services
+
+  // the coordinate system data is used throughout the tracking code
+  // for now, the tracking uses GEANT for the coordinates
+  // to build the coordinates requires dependent on artg4
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  @table::trackingChain.reducedGeometry
+  @table::trackingChain.field
+
+  TrackQuality : {} // default is off
+  // Book ROOT file for plots
+  // TFileService : { fileName : "TrackingLockLowDCA.root" }
+
+} // end of services block
+
+physics : {
+  filters: {
+    // Not sure whether I need all this
+    TrackFilter : 
+    {
+      module_type : TrackerFillTypeFilter
+      fillType    : 1
+      throwOnEmptyHeaderCollection : false
+      // Need some radius filter <500 um
+      
+    }
+  }
+  producers : {
+    // Tracking chain
+   @table::trackingChain.producers
+    // Fit the tracks
+     tracks0 : @local::geanefit_params_detailed // 0 um 
+     
+   } 
+
+  // My path, reconstructing tracks with different lockLowDCA values
+   path : [ TrackFilter,
+     artg4,
+     removeFlash,
+     killStraws,
+     digitTimeSync,
+     deadTime,
+     timeIslands,
+     clustering,
+     seeds,
+     trackCandidates,
+     t0Finder,
+     driftDistReco,
+     tracks0
+     ] 
+
+   outputPath    : [out] 
+   trigger_paths : [path]
+   end_paths     : [outputPath] //plot] //outputPath, plot] // outputPath
+
+} // end of physics block
+
+// physics.producers.driftDistReco.calculatorName : garfieldDriftDistanceEstimator
+
+physics.producers.t0Finder.meanTimeOffset : 34 // 36.5 is for 1550V, 34 for 1625V. Different for Sim.
