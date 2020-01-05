@@ -1,3 +1,4 @@
+
 // Simple version of MC low DCAs plotter, for de-bugging
 // Sam Grant - Dec 2019
 
@@ -59,21 +60,64 @@ physics : {
 
   analyzers : {
 
-      //   geanePlots        : { 
-      //                     module_type : GeanePlots
-      //                     TrackModuleLabel : "tracks0"
-      //                     TrackInstanceName : "straws"
-      //   //SelectEvents:["offline:strawPathwithDQC"]
-      // }
+  //       geanePlots        : { 
+  //                         module_type : GeanePlots
+  //                         TrackModuleLabel : "tracks0"
+  //                         TrackInstanceName : "straws"
+//
+//  //                         dirName : "geane"
+//  //       //SelectEvents:["offline:strawPathwithDQC"]
+  //     }
 
-    plots0    : {
-      module_type : LowDCAsSimPlots
-      TrackModuleLabel : "tracks0"
-      TrackInstanceName : "straws"
-      dirName : "plots0"
-      sim : true
-    }
+ //   plots0    : {
+ //     module_type : LowDCAsSimPlots
+ //     TrackModuleLabel : "tracks0"
+ //     TrackInstanceName : "straws"
+ //     dirName : "plots0"
+////      sim : true
+ //   }
 
+ plots0 : {
+ 
+     module_type :  LowDCAsPlots
+ 
+     TrackModuleLabel : "tracks0"
+     TrackInstanceName : "straws"
+     // SelectEvents:["offline:strawPathwithDQC"]
+//     keepTrackingActions : true
+     //DummyModuleLabel : "tracks0"
+     //DummyInstanceName : "straws"
+ 
+     dirName : "plots0"
+ }
+
+// plots10 : {
+// 
+//     module_type :  LowDCAsPlots
+// 
+//     TrackModuleLabel : "tracks10"
+//     TrackInstanceName : "straws"
+//     // SelectEvents:["offline:strawPathwithDQC"]
+////     keepTrackingActions : true
+//     //DummyModuleLabel : "tracks0"
+//     //DummyInstanceName : "straws"
+// 
+//     dirName : "plots10"
+// }
+
+ plots20 : {
+ 
+     module_type :  LowDCAsPlots
+ 
+     TrackModuleLabel : "tracks20"
+     TrackInstanceName : "straws"
+     // SelectEvents:["offline:strawPathwithDQC"]
+//     keepTrackingActions : true
+     //DummyModuleLabel : "tracks0"
+     //DummyInstanceName : "straws"
+ 
+     dirName : "plots20"
+ }
 
   } // ana
 

@@ -71,7 +71,8 @@ physics :
      digitizer : @local::digit_params
      @table::trackingChain.producers
      // Fit the tracks, retain detail art track art record for all tracks
-     tracks0 : @local::geanefit_params_detailed// 0 um 
+      tracks0 : @local::geanefit_params_detailed
+      tracks20 : @local::geanefit_params_detailed// 0 um 
      // Reco chain
    } // end of producer block 
    
@@ -99,7 +100,8 @@ physics :
      trackCandidates,
      t0Finder,
      driftDistReco,
-     tracks0
+     tracks0,
+     tracks20
 ]
 
   outputPath    : [out] 
@@ -115,10 +117,11 @@ outputs :
      dataTier     : "full"
      outputCommands : [ "keep *",
 	                "drop gm2truth*_*_*_mdc*",
-                   @sequence::trackingChain.outputDrops
+                         @sequence::trackingChain.outputDrops
                       ]		
 		      
      SelectEvents : ["path"] 
+     //SelectEvents:["offline:strawPathwithDQC"]
 
   }
 
@@ -127,15 +130,24 @@ outputs :
 
 // Drift time estimator patch
 physics.producers.driftDistReco.calculatorName : garfieldDriftDistanceEstimator
+
 source.firstRun    : 1
 source.firstSubRun : 1
 
 // t0 finder patches
 physics.producers.t0Finder.meanTimeOffset : 24.6
 // version 33 patches
-physics.filters.fillEvents.KeepTrackingActions : false
+// physics.filters.fillEvents.KeepTrackingActions : false
 
 // jmott 
 physics.filters.fillEvents.KeepGhostDetHits    : true
 //physics.filters.fillEvents.KeepTrajectories    : true
-//physics.filters.fillEvents.KeepTrackingActions : true
+
+// If you have a track collection error, pick true or false at random and one of them will work
+// physics.filters.fillEvents.KeepTrackingActions : true
+physics.filters.fillEvents.KeepTrackingActions : false
+
+// Low DCAs
+physics.producers.tracks0.keepTrackDetailArtRecord : true
+physics.producers.tracks0.lockLowDCAs : 0.000
+physics.producers.tracks20.lockLowDCAs : 0.500

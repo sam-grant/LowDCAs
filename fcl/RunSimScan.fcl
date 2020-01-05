@@ -1,5 +1,3 @@
-
-
 #include "messageParams.fcl"
 #include "trackingConfig.fcl"
 #include "caloConfig.fcl"
@@ -89,30 +87,30 @@ physics :
 
 
 
-     @table::trackingChain.producers
+     @table::trackingChain.producers // _detailed
       
      // Fit the tracks
-     tracks0 : @local::geanefit_params // 0 um 
-     tracks1 : @local::geanefit_params // 25 um 
-     tracks2 : @local::geanefit_params // 50 um 
-     tracks3 : @local::geanefit_params // 75 um 
-     tracks4 : @local::geanefit_params // 100 um 
-     tracks5 : @local::geanefit_params // 125 um 
-     tracks6 : @local::geanefit_params // 150 um 
-     tracks7 : @local::geanefit_params // 175 um 
-     tracks8 : @local::geanefit_params // 200 um 
-     tracks9 : @local::geanefit_params // 225 um 
-     tracks10 : @local::geanefit_params // 250 um 
-     tracks11 : @local::geanefit_params // 275 um 
-     tracks12 : @local::geanefit_params // 300 um 
-     tracks13 : @local::geanefit_params // 325 um 
-     tracks14 : @local::geanefit_params // 350 um 
-     tracks15 : @local::geanefit_params // 375 um 
-     tracks16 : @local::geanefit_params // 400 um 
-     tracks17 : @local::geanefit_params // 425 um 
-     tracks18 : @local::geanefit_params // 450 um 
-     tracks19 : @local::geanefit_params // 475 um 
-     tracks20 : @local::geanefit_params // 500 um
+     tracks0 : @local::geanefit_params_detailed // 0 um 
+     tracks1 : @local::geanefit_params_detailed // 25 um 
+     tracks2 : @local::geanefit_params_detailed // 50 um 
+     tracks3 : @local::geanefit_params_detailed // 75 um 
+     tracks4 : @local::geanefit_params_detailed // 100 um 
+     tracks5 : @local::geanefit_params_detailed // 125 um 
+     tracks6 : @local::geanefit_params_detailed // 150 um 
+     tracks7 : @local::geanefit_params_detailed // 175 um 
+     tracks8 : @local::geanefit_params_detailed // 200 um 
+     tracks9 : @local::geanefit_params_detailed // 225 um 
+     tracks10 : @local::geanefit_params_detailed // 250 um 
+     tracks11 : @local::geanefit_params_detailed // 275 um 
+     tracks12 : @local::geanefit_params_detailed // 300 um 
+     tracks13 : @local::geanefit_params_detailed // 325 um 
+     tracks14 : @local::geanefit_params_detailed // 350 um 
+     tracks15 : @local::geanefit_params_detailed // 375 um 
+     tracks16 : @local::geanefit_params_detailed // 400 um 
+     tracks17 : @local::geanefit_params_detailed // 425 um 
+     tracks18 : @local::geanefit_params_detailed // 450 um 
+     tracks19 : @local::geanefit_params_detailed // 475 um 
+     tracks20 : @local::geanefit_params_detailed // 500 um
 
      // Reco chain
     // @table::trackingChain.producers
@@ -204,21 +202,25 @@ outputs :
 } // end of outputs block
 // dca calc patched parameters
 
-// This changes the first three points
+// dca calc patched parameters
+
+// Drift time estimator patch
 physics.producers.driftDistReco.calculatorName : garfieldDriftDistanceEstimator
-// 
+
 source.firstRun    : 1
 source.firstSubRun : 1
 
 // t0 finder patches
 physics.producers.t0Finder.meanTimeOffset : 24.6
 // version 33 patches
-//physics.filters.fillEvents.KeepTrackingActions : true
-//physics.producers.vertices.doForwardsExtrap : false
+// physics.filters.fillEvents.KeepTrackingActions : false
 
-// jmott 2:15 PM
+// jmott 
 physics.filters.fillEvents.KeepGhostDetHits    : true
-physics.filters.fillEvents.KeepTrajectories    : true
+//physics.filters.fillEvents.KeepTrajectories    : true
+
+// If you have a track collection error, pick true or false at random and one of them will work
+// physics.filters.fillEvents.KeepTrackingActions : true
 physics.filters.fillEvents.KeepTrackingActions : false
 
 // physics.producers.tracks0.lockLowDCAs : 0.000 // Default is zero anyway

@@ -24,7 +24,7 @@ services : {
       }
       LogToFile : {
         type      : "file"
-        filename  : "SimScanPlots.log"
+        filename  : "LowDCAs_SimScanPlots.log"
 //        filename  : "LowDCAsPlots.log"
         append    :  false
         threshold : "INFO"
@@ -46,7 +46,7 @@ services : {
   TrackQuality : {}
 
   TFileService: {
-    fileName: "SimScanPlots.root"
+    fileName: "LowDCAs_SimScanPlots.root"
 //    fileName: "LowDCAsPlots.root"
   }
 

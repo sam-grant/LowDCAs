@@ -1,9 +1,7 @@
 # Define output path
 #path=/gm2/app/users/sgrant/Offline/LowDCAs/JobOutput/
 
-
 #returnPath=/gm2/app/users/sgrant/Offline/LowDCAs/
-
 
 # If STOP file is created, pause job
 if [ -f STOP ]; then 
@@ -11,7 +9,6 @@ if [ -f STOP ]; then
   return
   exit
 fi
-
 
 # Label piped input file
 inFile=$1
@@ -25,7 +22,7 @@ echo $inFile
 #fi
 
 # If not, create a new dir for output, copy input file into it
-mkdir $inFile
+# mkdir $inFile
 cd $inFile
 cp ../Files/$inFile .
 
@@ -37,12 +34,11 @@ done
 
 # Run sim
 echo $filesToRun
-gm2 -c /gm2/app/users/sgrant/Offline/LowDCAs/FCL/RunSimLowDCAs500.fcl -s $filesToRun
+gm2 -c /gm2/app/users/sgrant/Offline/LowDCAs/fcl/RunSimScan.fcl -s $filesToRun
 #gm2 -c /gm2/app/users/sgrant/Offline/LowDCAs/FCL/RunSimLowDCAs500.fcl -S $inFile
 # -T TrackCaloMatchingSim_${inFile}.root
 # Return to run dir
 cd ../
-
 
 # Run sim
 # gm2 -c /gm2/app/users/sgrant/Offline/LowDCAs/FCL/RunSimLowDCAs500.fcl -S $inFile

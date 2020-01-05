@@ -1,8 +1,8 @@
 for i in {200..225}; do
-    #mkdir Plots${i}
+    mkdir Plots${i}
     cd Plots${i}
-    gm2 -c ../FCL/RunPlotsSimLowDCAs500.fcl -s ../RunSim/File${i}/gm2tracker_particle_gun_full.root
+    gm2 -c ../../fcl/RunPlotsSimScan.fcl -s ../../RunSim/File${i}/gm2tracker_sim_scan.root
     cd ../
 done
 
-hadd -f Plots/LowDCAsSimPlots500_MottTest.root Plots*/LowDCAsSimPlots500.root
+hadd -f Plots/LowDCAs_SimScanPlotsFull.root Plots*/LowDCAs_SimScanPlots.root
