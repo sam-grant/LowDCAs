@@ -1,0 +1,259 @@
+#include "messageParams.fcl"
+#include "trackingConfig.fcl"
+#include "caloConfig.fcl"
+
+process_name : offline
+
+source : 
+{
+  module_type : RootInput
+  maxEvents   : -1
+}
+
+services : 
+{
+  FileCatalogMetadata : {
+      applicationFamily  : "tracker"
+      applicationVersion : "v9_33_00"
+      fileType           : "offline"
+  }
+
+  message : {
+    debugModules : []
+    suppressInfo : []
+
+    destinations : {
+      LogToConsole : {
+        type       : "cout"
+        threshold  : "INFO"
+        categories : @local::message_categories
+      }
+      LogToFile : {
+        type      : "file"
+        filename  : "gm2tracker_sim_scan.log"
+        append    :  false
+        threshold : "INFO"
+        categories : @local::message_categories
+      }
+    }
+  } // end of message services
+ 
+
+  // the coordinate system data is used throughout the tracking code
+  // for now, the tracking uses GEANT for the coordinates
+  // to build the coordinates requires dependent on artg4
+
+  DetectorHolder    : {}
+  ActionHolder      : {}
+  CoordSystemsStore : {}
+  Gm2Constants      : {}
+  RandomNumberGenerator : {}
+
+  @table::trackingChain.reducedGeometry
+  @table::trackingChain.field
+
+//  Database: {
+//    conDBHost  : 'dbdata0vm.fnal.gov'
+//    conDBPort  : '9091'
+//    conDBName  : 'postgres_dev'
+//  }
+
+  scheduler : { errorOnFailureToPut : false }
+  TrackQuality : {}
+
+//  TemplateFitterHolder : {
+//       storeSplines : false
+//       isSimulation : true
+//  }
+
+} // end of services block
+   
+
+
+physics : 
+
+{
+  producers : {
+
+//      trackCaloMatching : {
+//	 module_type           : TrackCaloMatching
+//	 clusterModuleLabel    : hitClusterSim
+//	 clusterInstanceLabel  : cluster
+//	 coincidenceTimeWindow : [-15,10] // ns
+//      }
+
+     // digitization of simulation
+     digitizer : @local::digit_params
+
+
+
+     @table::trackingChain.producers // _detailed
+      
+     // Fit the tracks
+     tracks0 : @local::geanefit_params_detailed // 100 um 
+     tracks1 : @local::geanefit_params_detailed // 200 um 
+     tracks2 : @local::geanefit_params_detailed // 300 um 
+     tracks3 : @local::geanefit_params_detailed // 400 um 
+     tracks4 : @local::geanefit_params_detailed // 500 um 
+     tracks5 : @local::geanefit_params_detailed // 600 um 
+     tracks6 : @local::geanefit_params_detailed // 700 um 
+     tracks7 : @local::geanefit_params_detailed // 800 um 
+     tracks8 : @local::geanefit_params_detailed // 900 um 
+     tracks9 : @local::geanefit_params_detailed // 1000 um 
+     tracks10 : @local::geanefit_params_detailed // 1100 um 
+     tracks11 : @local::geanefit_params_detailed // 1200 um 
+     tracks12 : @local::geanefit_params_detailed // 1300 um 
+     tracks13 : @local::geanefit_params_detailed // 1400 um 
+     tracks14 : @local::geanefit_params_detailed // 1500 um 
+     tracks15 : @local::geanefit_params_detailed // 1600 um 
+     tracks16 : @local::geanefit_params_detailed // 1700 um 
+     tracks17 : @local::geanefit_params_detailed // 1800 um 
+     tracks18 : @local::geanefit_params_detailed // 1900 um 
+     tracks19 : @local::geanefit_params_detailed // 2000 um 
+     tracks20 : @local::geanefit_params_detailed // 2100 um
+     tracks21 : @local::geanefit_params_detailed // 2200 um
+     tracks22 : @local::geanefit_params_detailed // 2300 um
+     tracks23 : @local::geanefit_params_detailed // 2400 um
+     tracks24 : @local::geanefit_params_detailed // 2500 um
+
+     // Reco chain
+    // @table::trackingChain.producers
+  //   @table::caloChain.producers
+  } // end of producer block 
+   
+  
+ 
+ filters : {
+
+     // Put many muons into same fill 
+     fillEvents : @local::fill_params
+  
+  } // end of filter block
+
+  // Note this doesn't have DQC but we have to put this name here or we'd need different
+  // versions of RunTrackingPlots for data and MC!
+   // strawPathwithDQC : [fillEvents, digitizer,  @sequence::trackingChain.trackingPath, noDigitsFilter, @sequence::caloChain.caloSimPath, trackCaloMatching]
+//  strawPathwithDQC : [trackFilter, fillEvents, digitizer,  @sequence::trackingChain.trackingPath, @sequence::caloChain.caloSimPath, trackCaloMatching]
+//  strawPathwithDQC : [trackFilter, fillEvents, digitizer,  @sequence::trackingChain.trackingPath, @sequence::caloChain.caloSimPath, trackCaloMatching, trackCaloMatchMCFilter]
+  // My path, reconstructing tracks with different lockLowDCA values
+   path : [ 
+     artg4,
+     fillEvents,
+     digitizer,
+     removeFlash,
+     killStraws,
+     digitTimeSync,
+     deadTime,
+     timeIslands,
+     clustering,
+     seeds,
+     trackCandidates,
+     t0Finder,
+     driftDistReco,
+     tracks0,
+     tracks1,
+     tracks2,
+     tracks3, 
+     tracks4,
+     tracks5,
+     tracks6,
+     tracks7,
+     tracks8,
+     tracks9,
+     tracks10,
+     tracks11,
+     tracks12,
+     tracks13,
+     tracks14,
+     tracks15,
+     tracks16,
+     tracks17,
+     tracks18,
+     tracks19,
+     tracks20,
+     tracks21,
+     tracks22,
+     tracks23,
+     tracks24
+     ] 
+
+
+  outputPath    : [out] 
+  // plotPath : [ trackCaloMatchingAnaTrack, trackCaloMatchingAnaPositron ] 
+  trigger_paths : [path]//, caloPath]
+  end_paths     : [outputPath]
+} // end of physics block
+
+outputs :
+{
+  out : { 
+     module_type  : RootOutput
+     fileName     : "gm2tracker_sim_scan.root"
+     dataTier     : "full"
+     outputCommands : [ "keep *",
+	                "drop gm2truth*_*_*_mdc*",
+                   @sequence::trackingChain.outputDrops
+		//	"drop gm2calo::Rider*_*_*_*",
+		//	"drop gm2calo::CaloRiderView*_*_*_*",
+		//	"drop gm2calo::CaloCrystalHit*_*_*_*",
+		//	"drop gm2calo::IslandArtRecord*_*_*_*",
+		//	"drop gm2calo::RiderArtRecord*_*_*_*"
+                      ]		
+		      
+     SelectEvents : ["path"] 
+     //FCMDPlugins  : [ { plugin_type : Metadata 
+     //                   fhicl_name  : "gm2tracker_particle_gun_full.fcl"
+     //                   requestid   : "1"
+     //                   run_config  : "commission" }]
+  }
+
+} // end of outputs block
+// dca calc patched parameters
+
+// dca calc patched parameters
+
+// Drift time estimator patch
+physics.producers.driftDistReco.calculatorName : garfieldDriftDistanceEstimator
+
+source.firstRun    : 1
+source.firstSubRun : 1
+
+// t0 finder patches
+physics.producers.t0Finder.meanTimeOffset : 24.6
+// version 33 patches
+// physics.filters.fillEvents.KeepTrackingActions : false
+
+// jmott 
+physics.filters.fillEvents.KeepGhostDetHits    : true
+//physics.filters.fillEvents.KeepTrajectories    : true
+
+// If you have a track collection error, pick true or false at random and one of them will work
+// physics.filters.fillEvents.KeepTrackingActions : true
+physics.filters.fillEvents.KeepTrackingActions : false
+
+// physics.producers.tracks0.lockLowDCAs : 0.000 // Default is zero anyway
+physics.producers.tracks1.lockLowDCAs : 0.100
+physics.producers.tracks2.lockLowDCAs : 0.200
+physics.producers.tracks3.lockLowDCAs : 0.300
+physics.producers.tracks4.lockLowDCAs : 0.500
+physics.producers.tracks5.lockLowDCAs : 0.600
+physics.producers.tracks6.lockLowDCAs : 0.700
+physics.producers.tracks7.lockLowDCAs : 0.800
+physics.producers.tracks8.lockLowDCAs : 0.900
+physics.producers.tracks9.lockLowDCAs : 1.000
+physics.producers.tracks10.lockLowDCAs : 1.100
+physics.producers.tracks11.lockLowDCAs : 1.200
+physics.producers.tracks12.lockLowDCAs : 1.300
+physics.producers.tracks13.lockLowDCAs : 1.400
+physics.producers.tracks14.lockLowDCAs : 1.500
+physics.producers.tracks15.lockLowDCAs : 1.600
+physics.producers.tracks16.lockLowDCAs : 1.700
+physics.producers.tracks17.lockLowDCAs : 1.800
+physics.producers.tracks18.lockLowDCAs : 1.900
+physics.producers.tracks19.lockLowDCAs : 2.000
+physics.producers.tracks20.lockLowDCAs : 2.100
+physics.producers.tracks21.lockLowDCAs : 2.200
+physics.producers.tracks22.lockLowDCAs : 2.300
+physics.producers.tracks23.lockLowDCAs : 2.400
+physics.producers.tracks24.lockLowDCAs : 2.500
+
