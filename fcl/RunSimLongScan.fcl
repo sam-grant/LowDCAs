@@ -89,7 +89,7 @@ physics :
 
      @table::trackingChain.producers // _detailed
       
-     // Fit the tracks
+     // Fit the tracks -100 um
      tracks0 : @local::geanefit_params_detailed // 100 um 
      tracks1 : @local::geanefit_params_detailed // 200 um 
      tracks2 : @local::geanefit_params_detailed // 300 um 
@@ -115,7 +115,7 @@ physics :
      tracks22 : @local::geanefit_params_detailed // 2300 um
      tracks23 : @local::geanefit_params_detailed // 2400 um
      tracks24 : @local::geanefit_params_detailed // 2500 um
-
+     tracks25 : @local::geanefit_params_detailed // 2500 um
      // Reco chain
     // @table::trackingChain.producers
   //   @table::caloChain.producers
@@ -174,7 +174,8 @@ physics :
      tracks21,
      tracks22,
      tracks23,
-     tracks24
+     tracks24,
+     tracks25
      ] 
 
 
@@ -231,29 +232,30 @@ physics.filters.fillEvents.KeepGhostDetHits    : true
 // physics.filters.fillEvents.KeepTrackingActions : true
 physics.filters.fillEvents.KeepTrackingActions : false
 
-// physics.producers.tracks0.lockLowDCAs : 0.000 // Default is zero anyway
+physics.producers.tracks0.lockLowDCAs : 0.000 // Default is zero anyway
 physics.producers.tracks1.lockLowDCAs : 0.100
 physics.producers.tracks2.lockLowDCAs : 0.200
 physics.producers.tracks3.lockLowDCAs : 0.300
-physics.producers.tracks4.lockLowDCAs : 0.500
-physics.producers.tracks5.lockLowDCAs : 0.600
-physics.producers.tracks6.lockLowDCAs : 0.700
-physics.producers.tracks7.lockLowDCAs : 0.800
-physics.producers.tracks8.lockLowDCAs : 0.900
-physics.producers.tracks9.lockLowDCAs : 1.000
-physics.producers.tracks10.lockLowDCAs : 1.100
-physics.producers.tracks11.lockLowDCAs : 1.200
-physics.producers.tracks12.lockLowDCAs : 1.300
-physics.producers.tracks13.lockLowDCAs : 1.400
-physics.producers.tracks14.lockLowDCAs : 1.500
-physics.producers.tracks15.lockLowDCAs : 1.600
-physics.producers.tracks16.lockLowDCAs : 1.700
-physics.producers.tracks17.lockLowDCAs : 1.800
-physics.producers.tracks18.lockLowDCAs : 1.900
-physics.producers.tracks19.lockLowDCAs : 2.000
-physics.producers.tracks20.lockLowDCAs : 2.100
-physics.producers.tracks21.lockLowDCAs : 2.200
-physics.producers.tracks22.lockLowDCAs : 2.300
-physics.producers.tracks23.lockLowDCAs : 2.400
-physics.producers.tracks24.lockLowDCAs : 2.500
+physics.producers.tracks4.lockLowDCAs : 0.400
+physics.producers.tracks5.lockLowDCAs : 0.500
+physics.producers.tracks6.lockLowDCAs : 0.600
+physics.producers.tracks7.lockLowDCAs : 0.700
+physics.producers.tracks8.lockLowDCAs : 0.800
+physics.producers.tracks9.lockLowDCAs : 0.900
+physics.producers.tracks10.lockLowDCAs : 1.000
+physics.producers.tracks11.lockLowDCAs : 1.100
+physics.producers.tracks12.lockLowDCAs : 1.200
+physics.producers.tracks13.lockLowDCAs : 1.300
+physics.producers.tracks14.lockLowDCAs : 1.400
+physics.producers.tracks15.lockLowDCAs : 1.500
+physics.producers.tracks16.lockLowDCAs : 1.600
+physics.producers.tracks17.lockLowDCAs : 1.700
+physics.producers.tracks18.lockLowDCAs : 1.800
+physics.producers.tracks19.lockLowDCAs : 1.900
+physics.producers.tracks20.lockLowDCAs : 2.000
+physics.producers.tracks21.lockLowDCAs : 2.100
+physics.producers.tracks22.lockLowDCAs : 2.200
+physics.producers.tracks23.lockLowDCAs : 2.300
+physics.producers.tracks24.lockLowDCAs : 2.400
+physics.producers.tracks25.lockLowDCAs : 2.500
 

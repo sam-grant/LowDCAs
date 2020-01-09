@@ -24,7 +24,7 @@ services : {
       }
       LogToFile : {
         type      : "file"
-        filename  : "LowDCAs_SimScanPlots.log"
+        filename  : "LowDCAs_SimLongScanPlots.log"
 //        filename  : "LowDCAsPlots.log"
         append    :  false
         threshold : "INFO"
@@ -46,7 +46,7 @@ services : {
   TrackQuality : {}
 
   TFileService: {
-    fileName: "LowDCAs_SimScanPlots.root"
+    fileName: "LowDCAs_SimLongScanPlots.root"
 //    fileName: "LowDCAsPlots.root"
   }
 
@@ -333,13 +333,23 @@ physics : {
       // DCACut : 500
     }
 
+    plots25   : {
+      module_type : LowDCAsPlots
+      // SelectEvents:["path"]
+      TrackModuleLabel : "tracks25"
+      TrackInstanceName : "straws"
+      dirName : "plots25"
+      //pValueCut : 0.05
+//      DCACut : 2000.0 // mm
+      // DCACut : 500
+    }
   } // ana
 
   plot : [ plots0, plots1, plots2, plots3, plots4, plots5,
    plots6, plots7, plots8, plots9, plots10, plots11, 
    plots12, plots13, plots14, plots15, plots16, 
    plots17, plots18, plots19, plots20, plots21,
-   plots22, plots23, plots24 ] 
+   plots22, plots23, plots24, plots25 ] 
 
   trigger_paths : [] 
   end_paths     : [plot]
