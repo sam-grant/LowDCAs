@@ -8,154 +8,302 @@ from ROOT import TFile, TCanvas, TH1F, TH1D, TLegend, TAxis, TAttMarker, TGraph,
 from ROOT import gROOT
 from array import array
 
-# # Return the number of tracks with a p-value less than 5%
-# def pValFrac(hist):
+def Ratio(allHist, wrongHist, rebin):
 
-# 	# Loop over the bins
-# 	# Get bin values
-# 	# Sum them
-# 	# Break when x-value is 5%
-# 	# Divide by total entries
+	# Clone to be safe
+	allHist.Rebin(rebin)
+	wrongHist.Rebin(rebin)
 
-# 	binVal = 0
-# 	for bin in range(0, hist.GetNbinsX()):
-# 		xVal = hist.GetBinCenter(bin+1)
-# 		# print(xVal)
-# 		# binVal = hist.GetBinContent(bin+1) + binVal
-# 		if(xVal < 0.05):
-# 			binVal = hist.GetBinContent(bin+1) + binVal
-# 			frac = binVal / hist.GetEntries()
+	ratio = wrongHist.Clone("ratio")
 
-# 			return frac
+	ratio.Divide(allHist)
 
-# 			def wrongHitsFrac(allHist, wrongHist):
+	return ratio
 
-# 				return  wrongHist.GetEntries() / allHist.GetEntries()
+
+def Mean(all_):
+
+	means_ = []
+
+	for ihist in range(len(all_)):
+
+		means_.append(all_[ihist].GetMean())
+
+	return means_
+
+# Return the number of tracks with a p-value less than 5%
+
+def pValFrac(all_):
+
+ 	# Loop over the bins
+ 	# Get bin x-values
+ 	# if x-value is < 5%, sum the bin contents
+ 	# Divide by total entries
+ 	tracksLessThan_ = []
+
+ 	for ihist in range(0,len(all_)):
+
+ 		tracks = 0
+
+ 		for bin in range(0, all_[ihist].GetNbinsX()):
+
+ 			pValue = all_[ihist].GetBinCenter(bin+1)
+ 			# print("p-value", pValue)
+ 			# binVal = hist.GetBinContent(bin+1) + binVal
+ 			if(pValue < 0.05):
+
+ 				tracks = all_[ihist].GetBinContent(bin+1) + tracks
+ 				# fraction = binVal / hist.GetEntries()
+
+ 		# print("tracks ",tracks)
+
+ 		tracksLessThan_.append(tracks / all_[ihist].GetEntries())
+
+ 	return tracksLessThan_
+
+def TotalTracks(all_):
+	totalTracks_ = []
+	for i in range(len(all_)):
+		totalTracks_.append(all_[i].GetEntries())
+	return totalTracks_
 
 def Frac(all_, rightOrWrong_):
-
-	frac = []
-
+	frac_ = []
 	for i in range(0,len(all_)):
+		frac_.append(rightOrWrong_[i].GetEntries() / all_[i].GetEntries() )
+	return frac_
 
-		# print("i ",i)
-		# print(str(rightOrWrong_[i].GetEntries())+" * "+str(all_[i].GetEntries()))
-		#  print("all_[i] ",all_[i])
+def DrawHist1D(hist,title,fname): 
 
-		frac.append(rightOrWrong_[i].GetEntries() / all_[i].GetEntries() )
+	c1 = TCanvas("c1","",800,600)
 
-		
+	# hist.Rebin(4)
+	hist.SetStats(0)
 
-	return frac
+	hist.SetTitle(title)
+			
+	hist.GetXaxis().SetTitleSize(.04)
+	hist.GetYaxis().SetTitleSize(.04)
+	hist.GetXaxis().SetTitleOffset(1.1)
+	hist.GetYaxis().SetTitleOffset(1.25)
+	hist.GetXaxis().CenterTitle(1)
+	hist.GetYaxis().CenterTitle(1)
+	# hist.GetYaxis().SetRangeUser(0.086,0.106)
+	hist.GetXaxis().SetRangeUser(0,500)
+	hist.GetYaxis().SetRangeUser(0.50,0.75)
+	hist.GetYaxis().SetMaxDigits(4)
 
-def DrawScat(y_, DCAs_, title, fname):
+	hist.SetLineWidth(3)
+	hist.SetLineColor(1)
 
-	c = TCanvas("c2","",800,600)
+	hist.Draw()
+	c1.SaveAs(fname)
 
-	# Normal arrays don't work for whatever reason, must be a ROOT thing
+def DefineScat(y_, x_):
+
 	x, y, ex, ey = array('d'), array('d'), array('d'), array('d')
 
 	n = len(y_)
 
-	# if(n != len(wrongHist)):
-		# print("*** Error, hist arrays different length ***")
-		# return
-
 	for i in range(0,n):
 
 #		frac = wrong_[i].GetEntries() / all_[i].GetEntries()
-		x.append(DCAs_[i])
+		x.append(x_[i])
 		ex.append(0)
 		y.append(y_[i])
 		ey.append(0)
 
 		# print(str(DCAs_[i])+" * "+str(y_)+" * "+str(wrong_[i].GetEntries())+" * "+str(all_[i].GetEntries()))
 
-	scat = TGraphErrors(n,x,y,ex,ey)
-	scat.SetTitle(title)
-			
-	scat.GetXaxis().SetTitleSize(.04)
-	scat.GetYaxis().SetTitleSize(.04)
-	scat.GetXaxis().SetTitleOffset(1.1)
-	scat.GetYaxis().SetTitleOffset(1.25)
-	scat.GetXaxis().CenterTitle(1)
-	scat.GetYaxis().CenterTitle(1)
-	# scat.GetYaxis().SetRangeUser(0.086,0.106)
-	scat.GetXaxis().SetRangeUser(-5,2500)
-	scat.GetYaxis().SetMaxDigits(4)
-	#scat.SetMarkerSize(3)
-	#scat.SetLineWidth(3)
-	scat.SetMarkerStyle(20) # Full circle
-	#scat.SetMarkerColor(4)
-	#scat.SetLineColor(4)
-	scat.Draw("AP")
-	c.SaveAs(fname)
+	return TGraphErrors(n,x,y,ex,ey)
+
+
+def DrawScat(plot, title, fname):
+
+	c2 = TCanvas("c2","",800,600)
+
+	plot.SetTitle(title)			
+	plot.GetXaxis().SetTitleSize(.04)
+	plot.GetYaxis().SetTitleSize(.04)
+	plot.GetXaxis().SetTitleOffset(1.1)
+	plot.GetYaxis().SetTitleOffset(1.25)
+	plot.GetXaxis().CenterTitle(1)
+	plot.GetYaxis().CenterTitle(1)
+	# plot.GetYaxis().SetRangeUser(0.086,0.106)
+	# plot.GetXaxis().SetRangeUser(-5,2500)
+	plot.GetYaxis().SetMaxDigits(4)
+	#plot.SetMarkerSize(3)
+	#plot.SetLineWidth(3)
+	plot.SetMarkerStyle(20) # Full circle
+	#plot.SetMarkerColor(4)
+	#plot.SetLineColor(4)
+	plot.Draw("AP")
+	c2.SaveAs(fname)
 
 	return
 
-shortFile = TFile.Open("~/Documents/gm2/LowDCAs/plots/LowDCAs_SimScanPlotsFull.root")
-longFile = TFile.Open("~/Documents/gm2/LowDCAs/plots/LowDCAs_SimScanLongPlotsFull.root")
+def DrawScatOverlay(plot1, plot2, title, fname):
 
-# Real dumb bit of logic here
-#DCAsArray_ = [0,25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500]
-#DCAsArray_ = [0,100,200,300,400,500,600,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500]
-DCAs_ = [list(range(0,525,25)), list(range(0,2600,100))]
-# 
-# histType = ["Run","pValues"]
-# nameType = ["Fraction of wrong tracks","Fraction of tracks with p-value < 5%"]
+	c2 = TCanvas("c2","",800,600)
 
-# Loop over histogram types
+	leg = TLegend(0.11,0.69,0.69,0.89)
+	leg.SetBorderSize(0)
 
+	plot1.SetTitle(title)			
+	plot1.GetXaxis().SetTitleSize(.04)
+	plot1.GetYaxis().SetTitleSize(.04)
+	plot1.GetXaxis().SetTitleOffset(1.1)
+	plot1.GetYaxis().SetTitleOffset(1.25)
+	plot1.GetXaxis().CenterTitle(1)
+	plot1.GetYaxis().CenterTitle(1)
+	# plot.GetYaxis().SetRangeUser(0.086,0.106)
+	plot1.GetXaxis().SetRangeUser(-5,505)
+	plot1.GetYaxis().SetMaxDigits(4)
+	plot1.GetYaxis().SetRangeUser(0,1)
+	#plot.SetMarkerSize(3)
+	#plot.SetLineWidth(3)
+	plot1.SetMarkerStyle(20) # Full circle
+	plot2.SetMarkerStyle(24) # Open circle
+	#plot.SetMarkerColor(4)
+	#plot.SetLineColor(4)
 
-files_ = [shortFile, longFile]
+	leg.AddEntry(plot1, "Fraction of tracks with a wrong LR choice")
+	leg.AddEntry(plot2, "Fraction of tracks with an ambiguous LR choice")
+	
+	plot1.Draw("AP")
+	plot2.Draw("P same")
 
-# fracHits = []
+	leg.Draw("same")
 
-# Loop over DCA scan
-for ifile in range(0,2):
+	c2.SaveAs(fname)
 
-	print("ifile",ifile)
+	return
 
-	allHits_ = []
-	wrongHits_ = []
-	rightHits_ = []
+# Wrap main in a function
+def main():
 
+	shortFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAs_SimScanPlotsFull_Ambiguous.root")
+	longFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAs_SimScanLongPlotsFull_Ambiguous.root")
+	
+	# DCA threshold arrays, short and long
+	DCAs_ = [list(range(0,525,25)), list(range(0,2600,100))]
+	# 
+	# histType = ["Run","pValues"]
+	# nameType = ["Fraction of wrong tracks","Fraction of tracks with p-value < 5%"]
+	
+	# Loop over histogram types
 
+	files_ = [shortFile, longFile]
 
-	for ihist in range(0,len(DCAs_[ifile])):
+	fileType = ".png"
+	# fileType = ".png"
 
-		# print(files_[ifile])
-		# print(DCAs_[ifile])
+	#
+	# Take ratio of all and wrong DCAs
+	#
 
-		allHits_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/Run"))
-		wrongHits_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/Run"))
-		rightHits_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/Run"))	
+	ratio = Ratio(files_[0].Get("plots0/AllHits/DCA"), files_[0].Get("plots0/WrongHits/DCA"), 2)
+
+	DrawHist1D(ratio, ";Measured DCA [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/DCARatio"+fileType)
+
+	# fracHits = []
+	
+	# Loop over DCA scan
+	for ifile in range(0,2):
+	
+		print("ifile",ifile)
+	
+		allHitsTracks_ = []
+		allHitsPValues_ = []
+		allHitsChiSqrDof_ = []
+
+		wrongHitsTracks_ = []
+		wrongHitsPValues_ = []
+		wrongHitsChiSqrDof_ = []
+
+		rightHitsTracks_ = []
+		rightHitsPValues_ = []
+		rightHitsChiSqrDof_ = []
+
+		ambiguousHitsTracks_ = []
+		ambiguousHitsPValues_ = []
+		ambiguousHitsChiSqrDof_ = []
+		
+		for ihist in range(0,len(DCAs_[ifile])):
+	
+			# print(files_[ifile])
+			# print(DCAs_[ifile])
+	
+			allHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/Run"))
+			allHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/pValues"))
+			allHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/ChiSqrDof"))
+
+			wrongHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/Run"))
+			wrongHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/pValues"))
+			wrongHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/ChiSqrDof"))
+
+			rightHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/Run"))	
+			rightHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/pValues"))
+			rightHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/ChiSqrDof"))
+
+			ambiguousHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/Run"))	
+			ambiguousHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/pValues"))
+			ambiguousHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/ChiSqrDof"))
 
 		# print(DCAsArray[ihist],pValFrac(allHits[ihist]))
-
-	# print("len(allHits) "+str(len(allHits)))
-	# print("allHits[0].GetMean() "+str(allHits[0].GetMean()))
-
-
-	#typeFlag = 0
-	#if (itype > 1): typeFlag = 1
-
-	#mean = "Mean "
-	#if (typeFlag == 1): mean = "" 
-	print("len(allHits_) ",len(allHits_))
-
-
 	
-	#print("Threshold [um] * "+histType[itype])
-	# DrawScat(histsArrayData, DCAsArray, typeFlag, ";Low DCA threshold [#mum];"+mean+nameType[itype],"../Plots-25-11-19/"+histType[itype]+"Scat500_DATA.pdf")
-	if(ifile == 0):
-		DrawScat(Frac(allHits_, wrongHits_), DCAs_[ifile], ";Low DCA threshold [#mum];Fraction of tracks with wrong LR", "Plots/FracWrongTracksShort.png")
-		DrawScat(Frac(allHits_, rightHits_), DCAs_[ifile], ";Low DCA threshold [#mum];Fraction of tracks with right LR", "Plots/FracRightTracksShort.png")
-	else:
-		DrawScat(Frac(allHits_, wrongHits_), DCAs_[ifile], ";Low DCA threshold [#mum];Fraction of tracks with wrong LR", "Plots/FracWrongTracksLong.png")
-		DrawScat(Frac(allHits_, rightHits_), DCAs_[ifile], ";Low DCA threshold [#mum];Fraction of tracks with right LR", "Plots/FracRightTracksLong.png")
+		# print("len(allHits) "+str(len(allHits)))
+		# print("allHits[0].GetMean() "+str(allHits[0].GetMean()))
+	
+	
+		#typeFlag = 0
+		#if (itype > 1): typeFlag = 1
+	
+		#mean = "Mean "
+		#if (typeFlag == 1): mean = "" 
+
+		
+		#print("Threshold [um] * "+histType[itype])
+		# DrawScat(histsArrayData, DCAsArray, typeFlag, ";Low DCA threshold [#mum];"+mean+nameType[itype],"../Plots-25-11-19/"+histType[itype]+"Scat500_DATA.pdf")
+		if(ifile == 0):
+
+			# All tracks
+			DrawScat(DefineScat(TotalTracks(allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Total number of tracks", "../TestPlots/TotalTracksShort"+fileType)
+			DrawScat(DefineScat(pValFrac(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with p-value < 5%", "../TestPlots/pValueFracShort"+fileType)
+
+			# Fractions of each type of track
+			DrawScat(DefineScat(Frac(allHitsTracks_, wrongHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/FracWrongTracksShort"+fileType)
+			DrawScat(DefineScat(Frac(allHitsTracks_, rightHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with only correct LR choices", "../TestPlots/FracRightTracksShort"+fileType)
+			DrawScat(DefineScat(Frac(allHitsTracks_, ambiguousHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with an ambiguous LR choice", "../TestPlots/FracAmbiguousTracksShort"+fileType)
+
+			DrawScatOverlay(DefineScat(Frac(allHitsTracks_, wrongHitsTracks_), DCAs_[ifile]),DefineScat(Frac(allHitsTracks_, ambiguousHitsTracks_), DCAs_[ifile]),";Low DCA threshold [#mum];Fraction of tracks","../TestPlots/FracWrongAmbTracksShort"+fileType)
+		
+		else:
+
+
+			# All tracks
+			DrawScat(DefineScat(TotalTracks(allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Total number of tracks", "../TestPlots/TotalTracksLong"+fileType)
+			DrawScat(DefineScat(Mean(allHitsChiSqrDof_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean #chi^{2}/ndf", "../TestPlots/chiSqrDofLong"+fileType)
+			DrawScat(DefineScat(pValFrac(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with p-value < 5%", "../TestPlots/pValueFracLong"+fileType)
+
+			# Fractions of each type of track
+			DrawScat(DefineScat(Frac(allHitsTracks_, wrongHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/FracWrongTracksLong"+fileType)
+			DrawScat(DefineScat(Frac(allHitsTracks_, rightHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with only right LR choices", "../TestPlots/FracRightTracksLong"+fileType)
+			DrawScat(DefineScat(Frac(allHitsTracks_, ambiguousHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with an ambiguous LR choice", "../TestPlots/FracAmbiguousTracksLong"+fileType)
+	
+	
+	
+	# draw1D(histsArrayCut, DCAsArray, ";p-value;Tracks / 0.005","../Plots/pValues1DExtreme.pdf")
+	# drawScat(histsArrayCut, DCAsArray, ";Low DCA Threshold [#mum];Mean p-value","../Plots/pValuesScatExtreme.pdf")
+
+# Execute main
+if __name__ == "__main__":
+	main()
 
 
 
-# draw1D(histsArrayCut, DCAsArray, ";p-value;Tracks / 0.005","../Plots/pValues1DExtreme.pdf")
-# drawScat(histsArrayCut, DCAsArray, ";Low DCA Threshold [#mum];Mean p-value","../Plots/pValuesScatExtreme.pdf")
+
+
+
+
+
