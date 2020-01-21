@@ -192,9 +192,9 @@ def DrawScatOverlay(plot1, plot2, title, fname):
 # Wrap main in a function
 def main():
 
-	shortFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAs_SimScanPlots_HitLevel.root")
+	shortFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAsPlots500_main.root")
 	#shortFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAs_SimScanPlotsFull_Ambiguous.root")
-	longFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAs_SimScanLongPlots_HitLevel.root")
+	longFile = TFile.Open("~/Documents/gm2/LowDCAs/ROOT/LowDCAsPlotsExtreme-25-11-19.root")
 	
 	# DCA threshold arrays, short and long
 	DCAs_ = [list(range(0,525,25)), list(range(0,2600,100))]
@@ -211,17 +211,18 @@ def main():
 
 	#
 	# Take ratio of all and wrong DCAs
-	#
+	# 
 
 
-	ratio_ = []
+	# ratio_ = []
 
-	for i_ratio in range(0,2):
+	# for i_ratio in range(0,2):
 
-		ratio = Ratio(files_[i_ratio].Get("plots0/WrongHits/DCA"), files_[i_ratio].Get("plots0/AllHits/DCA"), 1)
-		#ratio = Ratio(files_[0].Get("plots0/WrongHits/DCA"), files_[0].Get("plots0/AllHits/DCA"), 1)
-		DrawHist1D(files_[i_ratio].Get("plots0/AllHits/DCA"), ";Measured DCA [#mum];Hits", "../HitLevelPlots/DCAs"+str(i_ratio)+fileType, i_ratio)
-		DrawHist1D(ratio, ";Measured DCA [#mum];Fraction of hits with a wrong LR choice", "../HitLevelPlots/DCARatio"+str(i_ratio)+fileType, i_ratio)
+	# 	ratio = Ratio(files_[i_ratio].Get("plots0/WrongHits/DCA"), files_[i_ratio].Get("plots0/AllHits/DCA"), 1)
+	# 	#ratio = Ratio(files_[0].Get("plots0/WrongHits/DCA"), files_[0].Get("plots0/AllHits/DCA"), 1)
+	DrawHist1D(files_[0].Get("plots0/DCA"), ";Measured DCA [#mum];Hits", "../TestPlots/DCAsRecoShort"+str(0)+fileType, 0)
+	DrawHist1D(files_[1].Get("plots0/DCA"), ";Measured DCA [#mum];Hits", "../TestPlots/DCAsRecoLong"+str(0)+fileType, 1)
+	# 	DrawHist1D(ratio, ";Measured DCA [#mum];Fraction of hits with a wrong LR choice", "../HitLevelPlots/DCARatio"+str(i_ratio)+fileType, i_ratio)
 	# DrawHist1D(ratio, ";Measured DCA [#mum];Fraction of tracks with a wrong LR choice", "../TrackLevelPlots/DCARatio"+fileType)
 
 	# fracHits = []
@@ -235,38 +236,38 @@ def main():
 		allHitsPValues_ = []
 		allHitsChiSqrDof_ = []
 
-		wrongHitsTracks_ = []
-		wrongHitsPValues_ = []
-		wrongHitsChiSqrDof_ = []
+		# wrongHitsTracks_ = []
+		# wrongHitsPValues_ = []
+		# wrongHitsChiSqrDof_ = []
 
-		rightHitsTracks_ = []
-		rightHitsPValues_ = []
-		rightHitsChiSqrDof_ = []
+		# rightHitsTracks_ = []
+		# rightHitsPValues_ = []
+		# rightHitsChiSqrDof_ = []
 
-		ambiguousHitsTracks_ = []
-		ambiguousHitsPValues_ = []
-		ambiguousHitsChiSqrDof_ = []
+		# ambiguousHitsTracks_ = []
+		# ambiguousHitsPValues_ = []
+		# ambiguousHitsChiSqrDof_ = []
 		
 		for ihist in range(0,len(DCAs_[ifile])):
 	
 			# print(files_[ifile])
 			# print(DCAs_[ifile])
 	
-			allHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/Run"))
-			allHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/pValues"))
-			allHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/AllHits/ChiSqrDof"))
+			allHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/Run"))
+			allHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/pValues"))
+			allHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/ChiSqrDof"))
 
-			wrongHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/Run"))
-			wrongHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/pValues"))
-			wrongHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/ChiSqrDof"))
+			# wrongHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/Run"))
+			# wrongHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/pValues"))
+			# wrongHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/WrongHits/ChiSqrDof"))
 
-			rightHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/Run"))	
-			rightHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/pValues"))
-			rightHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/ChiSqrDof"))
+			# rightHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/Run"))	
+			# rightHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/pValues"))
+			# rightHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/RightHits/ChiSqrDof"))
 
-			ambiguousHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/Run"))	
-			ambiguousHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/pValues"))
-			ambiguousHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/ChiSqrDof"))
+			# ambiguousHitsTracks_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/Run"))	
+			# ambiguousHitsPValues_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/pValues"))
+			# ambiguousHitsChiSqrDof_.append(files_[ifile].Get("plots"+str(ihist)+"/AmbiguousHits/ChiSqrDof"))
 
 		# print(DCAsArray[ihist],pValFrac(allHits[ihist]))
 	
@@ -286,33 +287,33 @@ def main():
 		if(ifile == 0):
 
 			# All tracks
-			DrawScat(DefineScat(TotalTracks(allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Total number of tracks", "../TestPlots/TotalTracksSimShort"+fileType)
-			DrawScat(DefineScat(pValFrac(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with p-value < 5%", "../TestPlots/pValueFracSimShort"+fileType)
+			DrawScat(DefineScat(TotalTracks(allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Total number of tracks", "../TestPlots/TotalTrackRecoShort"+fileType)
+			DrawScat(DefineScat(pValFrac(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with p-value < 5%", "../TestPlots/pValueRecoFracShort"+fileType)
 			# DrawScat(DefineScat(pValFrac(wrongHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of wrong LR tracks with p-value < 5%", "../TestPlots/pValueWrongFracShort"+fileType)
 			# DrawScat(DefineScat(pValFrac(ambiguousHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of ambiguous LR tracks with p-value < 5%", "../TestPlots/pValueAmbiguousFracShort"+fileType)
-			DrawScat(DefineScat(Mean(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean p-value", "../TestPlots/pValueMeansShort"+fileType)
+			DrawScat(DefineScat(Mean(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean p-value", "../TestPlots/pValueMeansRecoShort"+fileType)
 			# Fractions of each type of track
-			DrawScat(DefineScat(Frac(wrongHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/FracWrongTracksShort"+fileType)
-			DrawScat(DefineScat(Frac(rightHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with only correct LR choices", "../TestPlots/FracRightTracksShort"+fileType)
-			DrawScat(DefineScat(Frac(ambiguousHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with an ambiguous LR choice", "../TestPlots/FracAmbiguousTracksShort"+fileType)
+			# DrawScat(DefineScat(Frac(wrongHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/FracWrongTracksShort"+fileType)
+			# DrawScat(DefineScat(Frac(rightHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with only correct LR choices", "../TestPlots/FracRightTracksShort"+fileType)
+			# DrawScat(DefineScat(Frac(ambiguousHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with an ambiguous LR choice", "../TestPlots/FracAmbiguousTracksShort"+fileType)
 
-			DrawScatOverlay(DefineScat(Frac(wrongHitsTracks_, allHitsTracks_), DCAs_[ifile]),DefineScat(Frac(ambiguousHitsTracks_, allHitsTracks_), DCAs_[ifile]),";Low DCA threshold [#mum];Fraction of tracks","../TestPlots/FracWrongAmbTracksShort"+fileType)
+			# DrawScatOverlay(DefineScat(Frac(wrongHitsTracks_, allHitsTracks_), DCAs_[ifile]),DefineScat(Frac(ambiguousHitsTracks_, allHitsTracks_), DCAs_[ifile]),";Low DCA threshold [#mum];Fraction of tracks","../TestPlots/FracWrongAmbTracksShort"+fileType)
 		
 		else:
 
-
+			# print("Not using long scan, sorry too complicated")
 			# All tracks
-			DrawScat(DefineScat(TotalTracks(allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Total number of tracks", "../TestPlots/TotalTracksSimLong"+fileType)
-			DrawScat(DefineScat(Mean(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean p-value", "../TestPlots/pValueMeansSimLong"+fileType)
-			DrawScat(DefineScat(Mean(allHitsChiSqrDof_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean #chi^{2}/ndf", "../TestPlots/chiSqrDofSimLong"+fileType)
-			DrawScat(DefineScat(pValFrac(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with p-value < 5%", "../TestPlots/pValueFracSimLong"+fileType)
-			# DrawScat(DefineScat(pValFrac(wrongHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of wrong LR tracks with p-value < 5%", "../TestPlots/pValueWrongFracLong"+fileType)
-			# DrawScat(DefineScat(pValFrac(ambiguousHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of ambiguous LR tracks with p-value < 5%", "../TestPlots/pValueAmbiguousFracLong"+fileType)
-			
-			# Fractions of each type of track
-			DrawScat(DefineScat(Frac(wrongHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/FracWrongTracksLong"+fileType)
-			DrawScat(DefineScat(Frac(rightHitsTracks_, allHitsTracks_, ), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with only right LR choices", "../TestPlots/FracRightTracksLong"+fileType)
-			DrawScat(DefineScat(Frac(ambiguousHitsTracks_, allHitsTracks_, ), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with an ambiguous LR choice", "../TestPlots/FracAmbiguousTracksLong"+fileType)
+			DrawScat(DefineScat(TotalTracks(allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Total number of tracks", "../TestPlots/TotalTracksRecoLong"+fileType)
+			DrawScat(DefineScat(Mean(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean p-value", "../TestPlots/pValueMeansRecoLong"+fileType)
+			# DrawScat(DefineScat(Mean(allHitsChiSqrDof_), DCAs_[ifile]), ";Low DCA threshold [#mum];Mean #chi^{2}/ndf", "../TestPlots/chiSqrDofLong"+fileType)
+			DrawScat(DefineScat(pValFrac(allHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with p-value < 5%", "../TestPlots/pValueFracRecoLong"+fileType)
+			# # DrawScat(DefineScat(pValFrac(wrongHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of wrong LR tracks with p-value < 5%", "../TestPlots/pValueWrongFracLong"+fileType)
+			# # DrawScat(DefineScat(pValFrac(ambiguousHitsPValues_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of ambiguous LR tracks with p-value < 5%", "../TestPlots/pValueAmbiguousFracLong"+fileType)
+			# 
+			# # Fractions of each type of track
+			# DrawScat(DefineScat(Frac(wrongHitsTracks_, allHitsTracks_), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with a wrong LR choice", "../TestPlots/FracWrongTracksLong"+fileType)
+			# DrawScat(DefineScat(Frac(rightHitsTracks_, allHitsTracks_, ), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with only right LR choices", "../TestPlots/FracRightTracksLong"+fileType)
+			# DrawScat(DefineScat(Frac(ambiguousHitsTracks_, allHitsTracks_, ), DCAs_[ifile]), ";Low DCA threshold [#mum];Fraction of tracks with an ambiguous LR choice", "../TestPlots/FracAmbiguousTracksLong"+fileType)
 	
 	
 	
