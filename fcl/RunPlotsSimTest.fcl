@@ -79,7 +79,7 @@ physics : {
 
  plots0 : {
  
-     module_type :  LowDCAsPlots
+     module_type :  LowDCAsTruthPlots
  
      TrackModuleLabel : "tracks0"
      TrackInstanceName : "straws"
@@ -93,7 +93,7 @@ physics : {
 
 // plots10 : {
 // 
-//     module_type :  LowDCAsPlots
+//     module_type :  LowDCAsTruthPlots
 // 
 //     TrackModuleLabel : "tracks10"
 //     TrackInstanceName : "straws"
@@ -107,7 +107,7 @@ physics : {
 
  plots20 : {
  
-     module_type :  LowDCAsPlots
+     module_type :  LowDCAsTruthPlots
  
      TrackModuleLabel : "tracks20"
      TrackInstanceName : "straws"

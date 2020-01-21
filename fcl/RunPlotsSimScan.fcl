@@ -57,7 +57,7 @@ physics : {
   analyzers : {
 
     plots0    : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       //// SelectEvents:["path"]
       TrackModuleLabel : "tracks0"
@@ -69,7 +69,7 @@ physics : {
     }
 
     plots1    : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
 //      SelectEvents:["offline:strawPathwithDQC"]
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks1"
@@ -81,7 +81,7 @@ physics : {
     }
 
     plots2    : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks2"
       TrackInstanceName : "straws"
@@ -92,7 +92,7 @@ physics : {
     }
 
     plots3    : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks3"
       TrackInstanceName : "straws"
@@ -103,7 +103,7 @@ physics : {
     }
 
     plots4    : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks4"
       TrackInstanceName : "straws"
@@ -114,7 +114,7 @@ physics : {
     }
 
     plots5    : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks5"
       TrackInstanceName : "straws"
@@ -125,7 +125,7 @@ physics : {
     }
 
     plots6   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks6"
       TrackInstanceName : "straws"
@@ -136,7 +136,7 @@ physics : {
     }
 
     plots7   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks7"
       TrackInstanceName : "straws"
@@ -147,7 +147,7 @@ physics : {
     }
 
     plots8   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks8"
       TrackInstanceName : "straws"
@@ -158,7 +158,7 @@ physics : {
     }
 
     plots9   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks9"
       TrackInstanceName : "straws"
@@ -169,7 +169,7 @@ physics : {
     }
 
     plots10   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks10"
       TrackInstanceName : "straws"
@@ -180,7 +180,7 @@ physics : {
     }
 
     plots11   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks11"
       TrackInstanceName : "straws"
@@ -191,7 +191,7 @@ physics : {
     }
 
     plots12   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks12"
       TrackInstanceName : "straws"
@@ -202,7 +202,7 @@ physics : {
     }
 
     plots13   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks13"
       TrackInstanceName : "straws"
@@ -213,7 +213,7 @@ physics : {
     }
 
     plots14   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks14"
       TrackInstanceName : "straws"
@@ -224,7 +224,7 @@ physics : {
     }
 
     plots15   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks15"
       TrackInstanceName : "straws"
@@ -235,7 +235,7 @@ physics : {
     }
 
     plots16   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks16"
       TrackInstanceName : "straws"
@@ -246,7 +246,7 @@ physics : {
     }
   
     plots17   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks17"
       TrackInstanceName : "straws"
@@ -257,7 +257,7 @@ physics : {
     }
 
     plots18   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks18"
       TrackInstanceName : "straws"
@@ -268,7 +268,7 @@ physics : {
     }
 
     plots19   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks19"
       TrackInstanceName : "straws"
@@ -279,7 +279,7 @@ physics : {
     }
 
     plots20   : {
-      module_type : LowDCAsPlots
+      module_type : LowDCAsTruthPlots
       // SelectEvents:["path"]
       TrackModuleLabel : "tracks20"
       TrackInstanceName : "straws"
